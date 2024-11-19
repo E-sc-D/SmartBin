@@ -18,12 +18,14 @@
 #define TEMP_SENSOR A3
 
 Servo door;
+int green_led_status = LOW;
+int red_led_status = LOW;
 
 void setup() {
     Serial.begin(9600);
     door.attach(SERVO);  // attaches the servo on pin SERVO to the servo object
     
-    pinMode(GREEN_LED, OUTPUT);
+    pinMode(PIR, INPUT);
     pinMode(SONAR_TRIG, OUTPUT);
     pinMode(SONAR_ECHO, INPUT);
     pinMode(OPEN_BUTTON, INPUT_PULLUP);
