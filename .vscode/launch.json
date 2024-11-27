@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/justr/Desktop/SmartBin",
-      "program": "c:/Users/justr/Desktop/SmartBin/build/Debug/outDebug",
+      "cwd": "c:/Users/Edoardo/code/SmartBin",
+      "program": "c:/Users/Edoardo/code/SmartBin/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
