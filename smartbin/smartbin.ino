@@ -6,6 +6,7 @@
 #include "TemperatureTask.h"
 #include "UserDetectorTask.h"
 #include "BinTask.h"
+#include "WasteDetectorTask.h"
 
 //digital pin
 #define PIR 2
