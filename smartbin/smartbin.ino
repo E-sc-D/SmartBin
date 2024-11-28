@@ -1,8 +1,11 @@
 #include <Wire.h>
-#include <Servo.h>
 #include <LiquidCrystal_I2C.h>
 #include <LowPower.h>
 #include <PinChangeInterrupt.h>
+#include "ButtonTask.h"
+#include "TemperatureTask.h"
+#include "UserDetectorTask.h"
+#include "BinTask.h"
 
 //digital pin
 #define PIR 2
@@ -17,13 +20,11 @@
 //analog pin
 #define TEMP_SENSOR A3
 
-Servo door;
 int green_led_status = LOW;
 int red_led_status = LOW;
 
 void setup() {
-    Serial.begin(9600);
-    door.attach(SERVO);  // attaches the servo on pin SERVO to the servo object
+    Serial.begin(9600);  // attaches the servo on pin SERVO to the servo object
     
     pinMode(PIR, INPUT);
     pinMode(SONAR_TRIG, OUTPUT);
@@ -35,5 +36,5 @@ void setup() {
 }
 
 void loop() {
-
+    
 }

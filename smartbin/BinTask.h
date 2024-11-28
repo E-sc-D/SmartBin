@@ -2,6 +2,7 @@
 #define __USERDETECTORTASK__
 
 #include "Task.h"
+#include <Servo.h>
 
 #define STATUS_CLOSED 0
 #define STATUS_OPENED 1
@@ -15,6 +16,7 @@ class BinTask : public Task{
         int idTemperature;
         int idWaste;
         int idButton;
+        Servo door;
 
         void open();
         void close();

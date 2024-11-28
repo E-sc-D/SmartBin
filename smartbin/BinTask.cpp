@@ -7,6 +7,7 @@ void BinTask::init(int period, int pin, int idTemperature, int idWaste, int idBu
     this->idWaste = idWaste;
     this->idButton = idButton;
     this->state = STATUS_CLOSED;
+    this->door.attach(this->pin);
 }
 
 void BinTask::tick() {
@@ -42,9 +43,9 @@ void BinTask::tick() {
 }
 
 void BinTask::open() {
-
+    this->door.write(90);
 }
 
 void BinTask::close() {
-    
+    this->door.write(-90);
 }
