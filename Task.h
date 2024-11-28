@@ -4,11 +4,19 @@
 class Task {
   int myPeriod;
   int timeElapsed;
+  protected:
+    int* Svariable;
+    int id;
   
 public:
-  virtual void init(int period){
-    myPeriod = period;  
+  virtual void init(int period,int id){
+    myPeriod = period; 
+    this->id = id; 
     timeElapsed = 0;
+  }
+
+  void SetSvariable(int* var){
+    Svariable = var;
   }
 
   virtual void tick() = 0;
@@ -21,6 +29,10 @@ public:
     } else {
       return false; 
     }
+  }
+
+  int getId(){
+    return id;
   }
   
 };
