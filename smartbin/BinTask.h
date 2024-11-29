@@ -7,7 +7,9 @@
 #define STATUS_CLOSED 0
 #define STATUS_OPENED 1
 #define STATUS_FULL 2
-#define STATUS_HOT 3
+#define STATUS_EMPTYING 3
+#define STATUS_HOT 4
+#define STATUS_WAITING 5
 
 class BinTask : public Task{
     private:
@@ -18,9 +20,13 @@ class BinTask : public Task{
         int idButtonOpen;
         int idButtonClose;
         ServoTimer2 door;
+        unsigned long timeReference;
+        int amountOfWait;
+        int prevState;
 
         void open();
         void close();
+        void wait(int amountOfWait);
     public:
         void tick();
         BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose );
