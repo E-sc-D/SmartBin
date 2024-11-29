@@ -1,7 +1,9 @@
 #include "BinTask.h"
 #include <Arduino.h>
 
- BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonClose) {
+#define MIN_FREE_SPACE 5 //distanza minima in cm tra il sonar e il contenuto del bidone 
+
+BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonClose) {
     this->idTemperature = idTemperature;
     this->idWaste = idWaste;
     this->idButtonOpen = idButtonOpen;
@@ -17,7 +19,7 @@ void BinTask::tick() {
     switch (state)
     {
         case STATUS_CLOSED:
-            if (Svariable[idWaste]) {
+            if (Svariable[idWaste] < MIN_FREE_SPACE) {
                 state = STATUS_FULL;
                 //write containter full
             } else if (Svariable[idTemperature]) {
