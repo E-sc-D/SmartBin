@@ -7,7 +7,7 @@ WasteDetectorTask::WasteDetectorTask(int trigPin, int echoPin, int binid){ //il 
 
     //pinmode e altri config di arduino
 }
-void WasteDetectorTask::BinUsable() {
+float WasteDetectorTask::BinUsable() {
 	digitalWrite(this->trigPin, LOW);
 	delayMicroseconds(2);
 	digitalWrite(this->trigPin, HIGH);
@@ -22,6 +22,6 @@ void WasteDetectorTask::BinUsable() {
 void WasteDetectorTask::tick(){
     //se il bidone è aperto
     if(Svariable[idBin]==1){
-        Svariable[id] = BinUsable(); //misura il livello di scarti via arduino
+        Svariable[id] = (int)BinUsable(); //misura il livello di scarti via arduino
     }
 }
