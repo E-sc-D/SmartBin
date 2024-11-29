@@ -13,6 +13,7 @@
 }
 
 void BinTask::tick() {
+   Serial.println(state);
     switch (state)
     {
         case STATUS_CLOSED:

@@ -45,11 +45,11 @@ void setup() {
 
     scheduler.init(50);
 
-    Task* t0 = new TemperatureTask(13);
-    Task* t1 = new UserDetectorTask(13);
-    Task* t2 = new WasteDetectorTask(13,14,BIN_ID);
-    Task* t3 = new ButtonTask(13);
-    Task* t4 = new ButtonTask(13);
+    Task* t0 = new TemperatureTask(TEMP_SENSOR);
+    Task* t1 = new UserDetectorTask(PIR);
+    Task* t2 = new WasteDetectorTask(SONAR_ECHO,SONAR_TRIG,BIN_ID);
+    Task* t3 = new ButtonTask(OPEN_BUTTON);
+    Task* t4 = new ButtonTask(CLOSE_BUTTON);
     Task* t5 = new BinTask(TEMP_ID,WSTD_ID,BTN1_ID,BTN2_ID);
 
     t0->init(1000,TEMP_ID);
