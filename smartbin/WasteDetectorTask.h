@@ -9,7 +9,7 @@ class WasteDetectorTask : public Task{
         int idBin;
     public:
         WasteDetectorTask(int trigPin, int echoPin, int binState);
-        bool BinUsable();
+        void BinUsable();
         void tick();
 };
 #endif
