@@ -1,8 +1,8 @@
-#ifndef __USERDETECTORTASK__
-#define __USERDETECTORTASK__
+#ifndef __BINTASK__
+#define __BINTASK__
 
 #include "Task.h"
-#include <Servo.h>
+#include <ServoTimer2.h>
 
 #define STATUS_CLOSED 0
 #define STATUS_OPENED 1
@@ -15,13 +15,14 @@ class BinTask : public Task{
         int state;
         int idTemperature;
         int idWaste;
-        int idButton;
-        Servo door;
+        int idButtonOpen;
+        int idButtonClose;
+        ServoTimer2 door;
 
         void open();
         void close();
     public:
-        void init(int period, int pin, int idTemperature, int idWaste, int idButton);
         void tick();
+        BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose );
 };
 #endif

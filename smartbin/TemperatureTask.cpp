@@ -1,5 +1,6 @@
 #include "TemperatureTask.h"
 #include "ButtonTask.h"
+#include <Arduino.h>
 
 TemperatureTask::TemperatureTask(int pin){
     this->pin = pin;
@@ -7,5 +8,5 @@ TemperatureTask::TemperatureTask(int pin){
 }
 
 void TemperatureTask::tick(){
-    Svariable[id] = 1;//misura la temperatura via arduino
+   Svariable[id] =  ((analogRead(pin) * 0.00488) - 0.5) / 0.01;;//misura la temperatura via arduino
 }

@@ -1,11 +1,11 @@
 #include "BinTask.h"
-#include "Arduino.h"
+#include <Arduino.h>
 
-void BinTask::init(int period, int pin, int idTemperature, int idWaste, int idButton) {
-    Task::init(period, pin);
+ BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonClose) {
     this->idTemperature = idTemperature;
     this->idWaste = idWaste;
-    this->idButton = idButton;
+    this->idButtonOpen = idButtonOpen;
+    this->idButtonClose = idButtonClose;
     this->state = STATUS_CLOSED;
     this->door.attach(this->pin);
 }
@@ -18,13 +18,13 @@ void BinTask::tick() {
                 state = STATUS_FULL;
             } else if (Svariable[idTemperature]) {
                 state = STATUS_HOT; 
-            } else if (Svariable[idButton]) {
+            } else if (Svariable[idButtonOpen]) {
                 state = STATUS_OPENED;
                 open();
             }
             break;
         case STATUS_OPENED:
-            if (Svariable[idWaste] || Svariable[idTemperature] || !Svariable[idButton]) {
+            if (Svariable[idWaste] || Svariable[idTemperature] || !Svariable[idButtonClose]) {
                 state = STATUS_CLOSED;
                 close();
             }
@@ -33,6 +33,7 @@ void BinTask::tick() {
             if (Svariable[idTemperature]) {
                 state = STATUS_HOT;
             }
+            //if segnale inviato da arduino torna chiuso
             break;
         case STATUS_HOT:
             //Attendere GUI
@@ -40,6 +41,9 @@ void BinTask::tick() {
         default:
             break;
     }
+    Svariable[idButtonOpen] = 0;//pulisco gli stati ogni volta
+    Svariable[idButtonClose] = 0;
+    Svariable[id] = state;
 }
 
 void BinTask::open() {

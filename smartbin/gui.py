@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QProgressBar
 import serial
-
+    
 class OperatorDashboard(QWidget):
     def __init__(self):
         super().__init__()

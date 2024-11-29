@@ -1,5 +1,5 @@
 #include "UserDetectorTask.h"
-
+#include <Arduino.h>
 UserDetectorTask::UserDetectorTask(int pin){
     this->pin = pin;
     //arduino setup
@@ -10,4 +10,9 @@ void UserDetectorTask::tick(){
     //se il programma gira allora l'user c'è
     //altrimenti no
     //arduino controlla e in caso mette in sleep
+
+  /* val = digitalRead(pin);  // read input value
+  if (val == HIGH) {       // check if the input is HIGH
+   
+  } */
 }

@@ -9,6 +9,7 @@ class ButtonTask: public Task{
     public:
         void tick();// serve per spostare lo scope di tick da solo task a Button task
         //altrimenti non vede la variabile precState
+        ButtonTask(int pin);
         
 };
 

@@ -5,11 +5,11 @@
 class WasteDetectorTask : public Task{
     private:
         int trigPin;
-        int echoPIn;
-        int n;
+        int echoPin;
+        int binState;
     public:
-        WasteDetectorTask(int pin);
-        bool  BinUsable(int n);
+        WasteDetectorTask(int trigPin, int echoPin, int binState);
+        bool BinUsable();
         void tick();
 };
 #endif

@@ -1,5 +1,5 @@
-#ifndef __BUTTONTASK__  
-#define __BUTTONTASK__
+#ifndef __TEMPERATURETASK__  
+#define __TEMPERATURETASK__
 
 #include "Task.h"
 class TemperatureTask : public Task{
