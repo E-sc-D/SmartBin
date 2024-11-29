@@ -23,38 +23,49 @@ void BinTask::tick() {
                 state = STATUS_HOT; 
             } else if (Svariable[idButtonOpen]) {
                 state = STATUS_OPENED;
+                timeReference = millis();//when the bin gets open, we need to count the time
                 //write in LCD
                 open();
             }
             break;
+
         case STATUS_OPENED:
             //check time, the bin closes after T time, 
-            if (Svariable[idWaste] || Svariable[idTemperature] || !Svariable[idButtonClose]) {
+            if (Svariable[idWaste] || Svariable[idTemperature] || 
+                !Svariable[idButtonClose]|| elapsed(1)) {
                 state = STATUS_CLOSED;
                 //change text and wait for T2
                 wait(1);
                 close();
             }
             break;
+
         case STATUS_FULL:
             if (Svariable[idTemperature]) {
                 state = STATUS_HOT;
             }
             //if segnale inviato da arduino si apre al contrario per T3 e poi si chiude
             break;
+
         case STATUS_EMPTYING:
             //il servo si apre al contrario
             //dopo T4 si richiude
+            empty();
+            wait(4);
+            close();
             state = STATUS_CLOSED;
             break; 
+
         case STATUS_HOT:
             //Attendere GUI
             break;
+
         case STATUS_WAITING:
-            if(millis() - timeReference >= amountOfWait){
+            if(elapsed(1)){
                 state = prevState;
             }
             break;
+
         default:
             break;
     }
@@ -68,11 +79,21 @@ void BinTask::open() {
 }
 
 void BinTask::close() {
+    this->door.write(0);
+}
+
+void BinTask::empty(){
     this->door.write(-90);
 }
 
-void BinTask::wait(int amountOfWait){
+void BinTask::wait(int amountOfWait){ 
     prevState = state;
     state = STATUS_WAITING;
     this->amountOfWait = amountOfWait;
+    timeReference = millis();
+}
+
+bool BinTask::elapsed(int time){
+    return (millis() - timeReference >= amountOfWait);
+                
 }

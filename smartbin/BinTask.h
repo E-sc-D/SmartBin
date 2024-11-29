@@ -26,9 +26,11 @@ class BinTask : public Task{
 
         void open();
         void close();
+        void empty();
         void wait(int amountOfWait);
     public:
         void tick();
+        bool elapsed(int time);
         BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose );
 };
 #endif
