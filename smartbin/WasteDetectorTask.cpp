@@ -22,12 +22,12 @@ bool WasteDetectorTask::BinUsable() {
     }
 	//interrupts();
 	return usable; */
-  return true;
+    return true;
 }
 
 void WasteDetectorTask::tick(){
-    if(Svariable[binState]){//se il bidone è aperto
-        Svariable[id] = (int)BinUsable();//misura il livello di scarti via arduino
+    if(Svariable[idBin]==1){//se il bidone è aperto
+        Svariable[id] = 1;//misura il livello di scarti via arduino
     }
     
 }

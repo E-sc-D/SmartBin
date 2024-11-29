@@ -6,7 +6,7 @@ class WasteDetectorTask : public Task{
     private:
         int trigPin;
         int echoPin;
-        int binState;
+        int idBin;
     public:
         WasteDetectorTask(int trigPin, int echoPin, int binState);
         bool BinUsable();
