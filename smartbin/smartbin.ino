@@ -31,7 +31,7 @@
 
 int green_led_status = LOW;
 int red_led_status = LOW;
-Scheduler scheduler;
+Scheduler* scheduler;
 
 void setup() {
     Serial.begin(9600);  // attaches the servo on pin SERVO to the servo object
@@ -44,8 +44,8 @@ void setup() {
     pinMode(GREEN_LED, OUTPUT);
     pinMode(RED_LED, OUTPUT);
 
-    scheduler.init(50);
-
+    
+    scheduler = new Scheduler();
     Task* t0 = new TemperatureTask(TEMP_SENSOR);
     Task* t1 = new UserDetectorTask(PIR);
     Task* t2 = new WasteDetectorTask(SONAR_TRIG,SONAR_ECHO,BIN_ID);
@@ -60,15 +60,17 @@ void setup() {
     t4->init(100,BTN2_ID);
     t5->init(200,BIN_ID);
 
-    scheduler.addTask(t0);
-    scheduler.addTask(t1);
-    scheduler.addTask(t2);
-    scheduler.addTask(t3);
-    scheduler.addTask(t4);
-    scheduler.addTask(t5);
+    scheduler->addTask(t0);
+    scheduler->addTask(t1);
+    scheduler->addTask(t2);
+    scheduler->addTask(t3);
+    scheduler->addTask(t4);
+    scheduler->addTask(t5);
+
+    scheduler->init(50);
     
 }
 
 void loop() {
-    scheduler.schedule();
+    scheduler->schedule();
 }

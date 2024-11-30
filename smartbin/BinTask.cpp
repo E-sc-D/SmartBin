@@ -19,6 +19,7 @@ BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonC
 
 void BinTask::tick() {
   Serial.println(millis());
+  Serial.println(state);
     switch (state)
     {
         case STATUS_CLOSED:
@@ -36,7 +37,7 @@ void BinTask::tick() {
             break;
 
         case STATUS_OPENED:
-            /* //check time, the bin closes after T time, 
+            //check time, the bin closes after T time, 
             if (Svariable[idWaste] > MIN_FREE_SPACE ||
                  Svariable[idTemperature] > 60 || 
                 !Svariable[idButtonClose] || elapsed(5000)) {
@@ -44,7 +45,7 @@ void BinTask::tick() {
                 //change text and wait for T2
                 close();
                 wait(3000);
-            } */
+            }
             break;
 
         case STATUS_FULL:
