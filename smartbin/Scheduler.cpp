@@ -5,7 +5,8 @@ void Scheduler::init(int basePeriod){
   this->basePeriod = basePeriod;
   timer.setupPeriod(basePeriod);  
   nTasks = 0;
-  Svariables = (int*)malloc(nTasks * sizeof(int));
+  Svariables = (int*)calloc(nTasks, sizeof(int));
+  Svariables[2] = 0;
 }
 
 bool Scheduler::addTask(Task* task){

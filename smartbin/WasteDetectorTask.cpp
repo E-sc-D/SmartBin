@@ -1,10 +1,10 @@
 #include "WasteDetectorTask.h"
 #include <Arduino.h>
 
-WasteDetectorTask::WasteDetectorTask(int trigPin, int echoPin, int binid){ //il bin deve dirgli se è aperto o no
+WasteDetectorTask::WasteDetectorTask(int trigPin, int echoPin, int idBin){ //il bin deve dirgli se è aperto o no
     this->trigPin = trigPin;
     this->echoPin = echoPin;
-
+    this->idBin = idBin;
     //pinmode e altri config di arduino
 }
 float WasteDetectorTask::BinUsable() {
@@ -21,7 +21,7 @@ float WasteDetectorTask::BinUsable() {
 
 void WasteDetectorTask::tick(){
     //se il bidone è aperto
-    if(Svariable[idBin]==1){
-        Svariable[id] = (int)BinUsable(); //misura il livello di scarti via arduino
+    if(Svariable[idBin] == 1){
+      Svariable[id] = (int)BinUsable(); //misura il livello di scarti via arduino
     }
 }
