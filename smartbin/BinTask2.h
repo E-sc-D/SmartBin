@@ -23,12 +23,38 @@ class BinTask : public Task{
         ServoTimer2 door;
         unsigned long timeReference;
         int amountOfWait;
-        
+
         FunctionState state_opened;
         FunctionState state_closed;
         FunctionState state_hot;
         FunctionState state_full;
         FunctionState state_emptying;
+
+        FunctionFsm fsm;
+
+        public:
+        MyClass():
+        state_opened( [this]() { opened_on(); },
+                      [this]() { opened_on_enter(); },
+                      [this]() { opened_on_exit();),
+
+        state_closed( [this]() { closed_on_enter(); },
+                      [this]() { closed_on(); },
+                      [this]() { closed_on_exit(); }),
+
+        state_full(   [this]() { closed_on_enter(); },
+                      [this]() { closed_on(); },
+                      [this]() { closed_on_exit(); }),
+
+        state_emptying( [this]() { emptying_on_enter(); },
+                        [this]() { emptying_on(); },
+                        [this]() { emptying_on_exit(); }),
+
+        state_hot(      [this]() { hot_on_enter(); },
+                        [this]() { hot_on(); },
+                        [this]() { hot_on_exit(); }),
+
+        fsm(&state_a)
 
         enum Trigger {
           TOGGLE_SWITCH
@@ -41,6 +67,7 @@ class BinTask : public Task{
 
         void closed_on();
         void closed_on_enter();
+        void closed_on_exit();
 
         void opened_on();
         void opened_on_enter();
