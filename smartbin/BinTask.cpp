@@ -19,10 +19,6 @@ BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonC
 }
 
 void BinTask::tick() {
-  Serial.println(millis());
-  Serial.println(state);
-
-    
     switch (state)
     {
         case STATUS_CLOSED:
@@ -85,6 +81,7 @@ void BinTask::tick() {
     Svariable[idButtonOpen] = 0;//pulisco gli stati ogni volta
     Svariable[idButtonClose] = 0;
     Svariable[id] = state;
+    Serial.println(Svariable[id]);
 }
 
 void BinTask::open() {
@@ -110,5 +107,5 @@ void BinTask::wait(unsigned long amountOfWait){
 }
 
 bool BinTask::elapsed(unsigned long time){
-    return (millis() - timeReference >= time);      
+    return (millis() - timeReference >= time);
 }
