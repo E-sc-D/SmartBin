@@ -9,7 +9,7 @@ class Task {
     int id;
   
   public:
-    virtual void init(int period,int id){
+    virtual void init(int period, int id){
       myPeriod = period; 
       this->id = id; 
       timeElapsed = 0;

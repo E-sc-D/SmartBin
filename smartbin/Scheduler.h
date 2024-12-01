@@ -18,7 +18,6 @@ class Scheduler {
     void init(int basePeriod);  
     virtual bool addTask(Task* task);  
     virtual void schedule();
-    Scheduler();
 };
 
 #endif
