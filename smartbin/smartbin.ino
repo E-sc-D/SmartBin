@@ -9,7 +9,6 @@
 #include "WasteDetectorTask.h"
 #include "Scheduler.h"
 
-
 //digital pin
 #define PIR 2
 #define SERVO 3
@@ -34,7 +33,7 @@ int red_led_status = LOW;
 Scheduler* scheduler;
 
 void setup() {
-    Serial.begin(9600);  // attaches the servo on pin SERVO to the servo object
+    Serial.begin(9600);
     
     pinMode(PIR, INPUT);
     pinMode(SONAR_TRIG, OUTPUT);
@@ -44,7 +43,6 @@ void setup() {
     pinMode(GREEN_LED, OUTPUT);
     pinMode(RED_LED, OUTPUT);
 
-    
     scheduler = new Scheduler();
     Task* t0 = new TemperatureTask(TEMP_SENSOR);
     Task* t1 = new UserDetectorTask(PIR);
@@ -52,13 +50,6 @@ void setup() {
     Task* t3 = new ButtonTask(OPEN_BUTTON);
     Task* t4 = new ButtonTask(CLOSE_BUTTON);
     Task* t5 = new BinTask(TEMP_ID,WSTD_ID,BTN1_ID,BTN2_ID,SERVO);
-
-    t0->init(1000,TEMP_ID);
-    t1->init(2000,USRD_ID);
-    t2->init(500,WSTD_ID);
-    t3->init(100,BTN1_ID);
-    t4->init(100,BTN2_ID);
-    t5->init(200,BIN_ID);
 
     scheduler->addTask(t0);
     scheduler->addTask(t1);
@@ -68,7 +59,13 @@ void setup() {
     scheduler->addTask(t5);
 
     scheduler->init(50);
-    
+
+    t0->init(1000,TEMP_ID);
+    t1->init(2000,USRD_ID);
+    t2->init(500,WSTD_ID);
+    t3->init(100,BTN1_ID);
+    t4->init(100,BTN2_ID);
+    t5->init(200,BIN_ID);
 }
 
 void loop() {

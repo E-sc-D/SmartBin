@@ -1,5 +1,6 @@
 #ifndef __WASTEDETECTORTASK__  
 #define __WASTEDETECTORTASK__
+
 #include "Task.h"
 
 class WasteDetectorTask : public Task{
@@ -12,4 +13,5 @@ class WasteDetectorTask : public Task{
         float BinUsable();
         void tick();
 };
+
 #endif

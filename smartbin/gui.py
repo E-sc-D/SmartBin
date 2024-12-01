@@ -6,7 +6,7 @@ class OperatorDashboard(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
-        self.serial = serial.Serial('COM3', 9600)
+        self.serial = serial.Serial('COM4', 9600)
 
     def initUI(self):
         self.setWindowTitle("Operator Dashboard")

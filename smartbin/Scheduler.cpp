@@ -1,14 +1,10 @@
 #include "Scheduler.h"
 #include <stdlib.h>
 
-Scheduler::Scheduler(){
-  this->nTasks = 0;
-}
 void Scheduler::init(int basePeriod){
   this->basePeriod = basePeriod;
   timer.setupPeriod(basePeriod);  
   Svariables = (int*)calloc(nTasks, sizeof(int));
-  Svariables[2] = 10;
 }
 
 bool Scheduler::addTask(Task* task){
@@ -30,4 +26,3 @@ void Scheduler::schedule(){
     }
   }
 }
-
