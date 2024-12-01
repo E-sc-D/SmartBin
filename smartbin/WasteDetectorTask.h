@@ -12,6 +12,7 @@ class WasteDetectorTask : public Task{
         WasteDetectorTask(int trigPin, int echoPin, int binState);
         float BinUsable();
         void tick();
+        void init(int period, int id) override;
 };
 
 #endif
