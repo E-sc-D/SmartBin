@@ -1,9 +1,8 @@
-#include "BinTask.h"
+#include "BinTask2.h"
 #include <Arduino.h>
-
+#include <FunctionFSM.h>
 #define MIN_FREE_SPACE 1 //distanza minima in cm tra il sonar e il contenuto del bidone 
 #define MAX_TEMP 60
-
 BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonClose,int pin) {
     this->idTemperature = idTemperature;
     this->idWaste = idWaste;
@@ -21,15 +20,13 @@ BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonC
 void BinTask::tick() {
   Serial.println(millis());
   Serial.println(state);
-
-    
     switch (state)
     {
         case STATUS_CLOSED:
-            if (Svariable[idWaste] < MIN_FREE_SPACE) {  
+            if (Svariable[idWaste] < MIN_FREE_SPACE) {
                 state = STATUS_FULL;
                 //write containter full
-            } else if (Svariable[idTemperature] > MAX_TEMP) {
+            } else if (Svariable[idTemperature] > 60) {
                 state = STATUS_HOT; 
             } else if (Svariable[idButtonOpen]) {
                 state = STATUS_OPENED;
@@ -42,9 +39,8 @@ void BinTask::tick() {
         case STATUS_OPENED:
             //check time, the bin closes after T time, 
             if (Svariable[idWaste] > MIN_FREE_SPACE ||
-                    Svariable[idTemperature] > MAX_TEMP || 
-                    Svariable[idButtonClose] || 
-                    elapsed(5000)) {
+                 Svariable[idTemperature] > 60 || 
+                !Svariable[idButtonClose] || elapsed(5000)) {
                 state = STATUS_CLOSED;
                 //change text and wait for T2
                 close();
@@ -53,7 +49,7 @@ void BinTask::tick() {
             break;
 
         case STATUS_FULL:
-            if (Svariable[idTemperature] > MAX_TEMP) {
+            if (Svariable[idTemperature] > 60) {
                 state = STATUS_HOT;
             }
             //if segnale inviato da arduino si apre al contrario per T3 e poi si chiude
@@ -82,8 +78,8 @@ void BinTask::tick() {
             break;
     }
 
-    Svariable[idButtonOpen] = 0;//pulisco gli stati ogni volta
-    Svariable[idButtonClose] = 0;
+    Svariable[idButtonOpen] = 1;//pulisco gli stati ogni volta
+    Svariable[idButtonClose] = 1;
     Svariable[id] = state;
 }
 
@@ -110,5 +106,6 @@ void BinTask::wait(unsigned long amountOfWait){
 }
 
 bool BinTask::elapsed(unsigned long time){
-    return (millis() - timeReference >= time);      
+    return (millis() - timeReference >= time);    
+           
 }

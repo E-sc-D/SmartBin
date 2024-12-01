@@ -13,5 +13,5 @@ void ButtonTask::tick(){
 
 ButtonTask::ButtonTask(int pin){
     this->pin = pin;
-    precState = HIGH;
+    precState = LOW;
 }
