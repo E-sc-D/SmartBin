@@ -21,7 +21,7 @@ BinTask2::BinTask2( int idTemperature, int idWaste, int idButtonOpen,int idButto
 
 void BinTask2::init(int period, int id) {
     Task::init(period, id);
-    fsm.add(timedTransitions, (sizeof(timedTransitions) / sizeof(transition)));
+    fsm.add(timedTransitions, (sizeof(timedTransitions) / sizeof(TimedTransition)));
     fsm.setInitialState(&s[0]);
 }
 
