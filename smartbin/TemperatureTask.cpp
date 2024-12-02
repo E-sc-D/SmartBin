@@ -8,5 +8,6 @@ TemperatureTask::TemperatureTask(int pin){
 
 void TemperatureTask::tick(){
     //misura la temperatura via arduino
-    Svariable[id] = (int)((analogRead(pin) * 0.00488) / 0.01);
+    Svariable[id] = (int)((analogRead(pin) * 0.00488 ) / 0.01);
+    Serial << "temp " << id << '\n';
 }

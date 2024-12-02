@@ -77,7 +77,7 @@ void BinTask::tick() {
         default:
             break;
     }*/
-
+    Serial << "bintask " << id << '\n';
     switch (this->state) {
         case CLOSED_ON:
             if (Svariable[this->idWaste] < MIN_FREE_SPACE) {

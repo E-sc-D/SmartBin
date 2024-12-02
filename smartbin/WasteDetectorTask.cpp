@@ -29,4 +29,5 @@ void WasteDetectorTask::tick() {
     if(Svariable[idBin] == 4){
         Svariable[id] = (int)BinUsable();
     }
+    Serial << "waste " << id << '\n';
 }
