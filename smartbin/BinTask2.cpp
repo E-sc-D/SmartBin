@@ -1,20 +1,20 @@
 #include "BinTask2.h"
 #include <Arduino.h>
 
-
 #define MIN_FREE_SPACE 1 //distanza minima in cm tra il sonar e il contenuto del bidone 
 #define MAX_TEMP 60
 
-BinTask2::BinTask2( int idTemperature, int idWaste, int idButtonOpen,int idButtonClose,int pin) {
+BinTask2::BinTask2(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin) {
+    this->pin = pin;
+    this->greenLedPin = greenLedPin;
+    this->redLedPin = redLedPin;
+    this->state = STATUS_CLOSED;
     this->idTemperature = idTemperature;
     this->idWaste = idWaste;
     this->idButtonOpen = idButtonOpen;
     this->idButtonClose = idButtonClose;
-    this->state = STATUS_CLOSED;
-    this->pin = pin;
-    this->door.attach(this->pin);
     this->timeReference = 0;
-    Serial.println("here");
+    this->door.attach(this->pin);
     //the led green starts on
     //lcd shows text for closed state
 }
@@ -54,7 +54,9 @@ void BinTask2::closed_on() {
 
 void BinTask2::closed_on_enter() {
     state = STATUS_CLOSED;
+    digitalWrite(greenLedPin, HIGH);
     close();
+    
 }
 
 void BinTask2::closed_on_exit() {
