@@ -30,7 +30,7 @@ void BinTask::init(int period, int id) {
 }
 
 void BinTask::tick() {
-    switch (state)
+    /*switch (state)
     {
         case STATUS_CLOSED:
             break;
@@ -69,22 +69,22 @@ void BinTask::tick() {
             break;
 
         case STATUS_WAITING:
-            /*if(elapsed(amountOfWait)){
+            if(elapsed(amountOfWait)){
                 state = prevState;
-            }*/
+            }
             break;
 
         default:
             break;
-    }
+    }*/
 
-    switch (state) {
+    switch (this->state) {
         case CLOSED_ON:
-            if (Svariable[idWaste] < MIN_FREE_SPACE) {
+            if (Svariable[this->idWaste] < MIN_FREE_SPACE) {
                 this->state = FULL_ON_ENTER;
-            } else if (Svariable[idTemperature] > MAX_TEMP) {
+            } else if (Svariable[this->idTemperature] > MAX_TEMP) {
                 this->state = HOT_ON_ENTER;
-            } else if (Svariable[idButtonOpen] == HIGH) {
+            } else if (Svariable[this->idButtonOpen] == HIGH) {
                 this->state = OPENED_ON_ENTER;
             }
             break;
@@ -100,12 +100,10 @@ void BinTask::tick() {
             lcd.print("TO ENTER WASTE");
             break;
         case CLOSED_ON_EXIT:
-            std::cout << "Stato: CLOSED_ON_EXIT\n";
             // Logica per CLOSED_ON_EXIT
             break;
 
         case OPENED_ON:
-            std::cout << "Stato: OPENED_ON\n";
             // Logica per OPENED_ON
             break;
         case OPENED_ON_ENTER:
@@ -125,13 +123,11 @@ void BinTask::tick() {
             this->state = CLOSED_ON_ENTER;
             break;
         case OPENED_TRANS_CLOSED:
-            std::cout << "Stato: OPENED_TRANS_CLOSED\n";
             // Logica per OPENED_TRANS_CLOSED
             break;
 
         case FULL_ON:
-            std::cout << "Stato: FULL_ON\n";
-            // Logica per FULL_ON
+            Serial.println(Svariable[this->idWaste]);
             break;
         case FULL_ON_ENTER:
             this->state = FULL_ON;
@@ -143,12 +139,10 @@ void BinTask::tick() {
             lcd.print("CONTAINER FULL");
             break;
         case FULL_ON_EXIT:
-            std::cout << "Stato: FULL_ON_EXIT\n";
             // Logica per FULL_ON_EXIT
             break;
 
         case EMPTYING_ON:
-            std::cout << "Stato: EMPTYING_ON\n";
             // Logica per EMPTYING_ON
             break;
         case EMPTYING_ON_ENTER:
@@ -161,12 +155,11 @@ void BinTask::tick() {
             lcd.print("EMPTYING CONTAINER");
             break;
         case EMPTYING_ON_EXIT:
-            std::cout << "Stato: EMPTYING_ON_EXIT\n";
             // Logica per EMPTYING_ON_EXIT
             break;
 
         case HOT_ON:
-            std::cout << "Stato: HOT_ON\n";
+            Serial.println(Svariable[this->idTemperature]);
             // Logica per HOT_ON
             break;
         case HOT_ON_ENTER:
@@ -179,21 +172,17 @@ void BinTask::tick() {
             lcd.print("PROBLEM DETECTED");
             break;
         case HOT_ON_EXIT:
-            std::cout << "Stato: HOT_ON_EXIT\n";
             // Logica per HOT_ON_EXIT
             break;
 
         case WRECEIVED_ON:
-            std::cout << "Stato: WRECEIVED_ON\n";
             // Logica per WRECEIVED_ON
             break;
         case WRECEIVED_ON_ENTER:
-            std::cout << "Stato: WRECEIVED_ON_ENTER\n";
             // Logica per WRECEIVED_ON_ENTER
             break;
 
         default:
-            std::cout << "Stato non riconosciuto!\n";
             break;
     }
 
