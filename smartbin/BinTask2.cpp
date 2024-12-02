@@ -53,7 +53,8 @@ void BinTask2::closed_on() {
 }
 
 void BinTask2::closed_on_enter() {
-
+    state = STATUS_CLOSED;
+    close();
 }
 
 void BinTask2::closed_on_exit() {
@@ -65,7 +66,8 @@ void BinTask2::opened_on() {
 }
 
 void BinTask2::opened_on_enter() {
-
+    state = STATUS_OPENED;
+    open();
 }
 
 void BinTask2::opened_on_exit() {
@@ -81,7 +83,7 @@ void BinTask2::full_on() {
 }
 
 void BinTask2::full_on_enter() {
-
+    state = STATUS_FULL;
 }
 
 void BinTask2::full_on_exit() {
@@ -93,7 +95,8 @@ void BinTask2::emptying_on() {
 }
 
 void BinTask2::emptying_on_enter() {
-
+    state = STATUS_EMPTYING;
+    empty();
 }
 
 void BinTask2::emptying_on_exit() {
@@ -105,7 +108,7 @@ void BinTask2::hot_on() {
 }
 
 void BinTask2::hot_on_enter() {
-
+    state = STATUS_HOT;
 }
 
 void BinTask2::hot_on_exit() {
