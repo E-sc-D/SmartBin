@@ -24,6 +24,7 @@ class BinTask2 : public Task{
         unsigned long timeReference;
 
         enum Triggers{};
+        enum EventId{};
         SimpleFSM fsm;
         State s[
             State("opened",    opened_on_enter,    opened_on,    opened_on_exit,   bool is_final = false);
@@ -33,16 +34,32 @@ class BinTask2 : public Task{
             State("hot",       hot_on_enter,       hot_on,       hot_on_exit,      bool is_final = false);
             State("wreceived", wreceived_on_enter, wreceived_on, NULL ,            bool is_final = false);
         ];
-        Transition transition[];
+        Transition transition[
+            Transition(&s[0], &s[1], close_bin,NULL,"",can_close);
+            Transition(&s[1], &s[0], open_bin);
+            Transition(&s[0], &s[2], bin_full);
+            Transition(&s[0], &s[4], bin_hot);
+            Transition(&s[1], &s[4], bin_hot);
+            Transition(&s[2], &s[4], bin_hot);
+            Transition(&s[4], &s[1], restore_bin);
+            
+        ];
         TimedTransition timedTransitions[
             TimedTransition(&s[1], &s[0], 6000), //da aperto a chiuso
-            TimedTransition(&s[3], &s[1], 6000), //da aperto a chiuso
+            TimedTransition(&s[3], &s[1], 6000), //da svuotamento a chiuso
+            TimedTransition(&s[5], &s[1], 6000), //da wreceived a chiuso
         ]
 
         void open();
         void close();
         void empty();
         void wait(unsigned long amountOfWait);
+
+        bool buttonOpen();
+        bool buttonClose();
+        bool temperature();
+        bool isFull();
+
 
     public:
         void tick();
