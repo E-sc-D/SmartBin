@@ -25,9 +25,19 @@ class BinTask2 : public Task{
 
         enum Triggers{};
         SimpleFSM fsm;
-        State s[];
+        State s[
+            State("opened",    opened_on_enter,    opened_on,    opened_on_exit,   bool is_final = false);
+            State("closed",    closed_on_enter,    closed_on,    closed_on_exit,   bool is_final = false);
+            State("full",      full_on_enter,      full_on,      full_on_exit,     bool is_final = false);
+            State("emptying",  emptying_on_enter,  emptying_on,  emptying_on_exit, bool is_final = false);
+            State("hot",       hot_on_enter,       hot_on,       hot_on_exit,      bool is_final = false);
+            State("wreceived", wreceived_on_enter, wreceived_on, NULL ,            bool is_final = false);
+        ];
         Transition transition[];
-        TimedTransition timedTransitions[]
+        TimedTransition timedTransitions[
+            TimedTransition(&s[1], &s[0], 6000), //da aperto a chiuso
+            TimedTransition(&s[3], &s[1], 6000), //da aperto a chiuso
+        ]
 
         void open();
         void close();
@@ -60,5 +70,8 @@ class BinTask2 : public Task{
         void hot_on();
         void hot_on_enter();
         void hot_on_exit();
+
+        void wreceived_on();
+        void wreceived_on_enter();
 };
 #endif
