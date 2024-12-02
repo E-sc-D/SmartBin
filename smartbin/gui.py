@@ -4,7 +4,7 @@ from tkinter import ttk
 import serial
 import threading
 
-arduino = serial.Serial(port='/dev/ttyUSB0', baudrate=9600, timeout=1)
+arduino = serial.Serial(port='COM3', baudrate=9600, timeout=1)
 
 def update_distance():
     """Aggiorna la distanza letta dal sonar e dal sensore"""

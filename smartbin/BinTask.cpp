@@ -1,9 +1,13 @@
 #include "BinTask.h"
 #include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
+#include <ServoTimer2.h>
 
 #define MIN_FREE_SPACE 1 //distanza minima in cm tra il sonar e il contenuto del bidone 
 #define MAX_TEMP 60
 
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+ServoTimer2 door;
 
 BinTask::BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin) {
     this->pin = pin;
@@ -13,28 +17,22 @@ BinTask::BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonC
     this->idWaste = idWaste;
     this->idButtonOpen = idButtonOpen;
     this->idButtonClose = idButtonClose;
-    this->state = STATUS_CLOSED;
+    this->state = CLOSED_ON_ENTER;
     this->timeReference = 0;
-    this->door.attach(this->pin);
-    //the led green starts on
-    //lcd shows text for closed state
+}
+
+void BinTask::init(int period, int id) {
+    Serial.println("INIT");
+    Task::init(period, id);
+    door.attach(this->pin);
+    lcd.init();
+    resetScreen();
 }
 
 void BinTask::tick() {
     switch (state)
     {
         case STATUS_CLOSED:
-            if (Svariable[idWaste] < MIN_FREE_SPACE) {  
-                state = STATUS_FULL;
-                //write containter full
-            } else if (Svariable[idTemperature] > MAX_TEMP) {
-                state = STATUS_HOT; 
-            } else if (Svariable[idButtonOpen]) {
-                state = STATUS_OPENED;
-                timeReference = millis();//when the bin gets open, we need to count the time
-                //write in LCD
-                open();
-            }
             break;
 
         case STATUS_OPENED:
@@ -80,25 +78,152 @@ void BinTask::tick() {
             break;
     }
 
-    Svariable[idButtonOpen] = 0;//pulisco gli stati ogni volta
-    Svariable[idButtonClose] = 0;
-    Svariable[id] = state;
+    switch (state) {
+        case CLOSED_ON:
+            if (Svariable[idWaste] < MIN_FREE_SPACE) {
+                this->state = FULL_ON_ENTER;
+            } else if (Svariable[idTemperature] > MAX_TEMP) {
+                this->state = HOT_ON_ENTER;
+            } else if (Svariable[idButtonOpen] == HIGH) {
+                this->state = OPENED_ON_ENTER;
+            }
+            break;
+        case CLOSED_ON_ENTER:
+            this->state = CLOSED_ON;
+            digitalWrite(this->greenLedPin, HIGH);
+            digitalWrite(this->redLedPin, LOW);
+            close();
+            resetScreen();
+            lcd.setCursor(5, 1);
+            lcd.print("PRESS OPEN");
+            lcd.setCursor(4, 2);
+            lcd.print("TO ENTER WASTE");
+            break;
+        case CLOSED_ON_EXIT:
+            std::cout << "Stato: CLOSED_ON_EXIT\n";
+            // Logica per CLOSED_ON_EXIT
+            break;
+
+        case OPENED_ON:
+            std::cout << "Stato: OPENED_ON\n";
+            // Logica per OPENED_ON
+            break;
+        case OPENED_ON_ENTER:
+            this->state = OPENED_ON;
+            open();
+            resetScreen();
+            lcd.setCursor(5, 1);
+            lcd.print("PRESS CLOSE");
+            lcd.setCursor(5, 2);
+            lcd.print("WHEN DONE");
+            break;
+        case OPENED_ON_EXIT:
+            resetScreen();
+            lcd.setCursor(3, 1);
+            lcd.print("WASTE RECEIVED");
+            //Wait T2 seconds
+            this->state = CLOSED_ON_ENTER;
+            break;
+        case OPENED_TRANS_CLOSED:
+            std::cout << "Stato: OPENED_TRANS_CLOSED\n";
+            // Logica per OPENED_TRANS_CLOSED
+            break;
+
+        case FULL_ON:
+            std::cout << "Stato: FULL_ON\n";
+            // Logica per FULL_ON
+            break;
+        case FULL_ON_ENTER:
+            this->state = FULL_ON;
+            digitalWrite(this->greenLedPin, LOW);
+            digitalWrite(this->redLedPin, HIGH);
+            close();
+            resetScreen();
+            lcd.setCursor(3, 1);
+            lcd.print("CONTAINER FULL");
+            break;
+        case FULL_ON_EXIT:
+            std::cout << "Stato: FULL_ON_EXIT\n";
+            // Logica per FULL_ON_EXIT
+            break;
+
+        case EMPTYING_ON:
+            std::cout << "Stato: EMPTYING_ON\n";
+            // Logica per EMPTYING_ON
+            break;
+        case EMPTYING_ON_ENTER:
+            this->state = EMPTYING_ON;
+            digitalWrite(this->greenLedPin, HIGH);
+            digitalWrite(this->redLedPin, LOW);
+            empty();
+            resetScreen();
+            lcd.setCursor(1, 1);
+            lcd.print("EMPTYING CONTAINER");
+            break;
+        case EMPTYING_ON_EXIT:
+            std::cout << "Stato: EMPTYING_ON_EXIT\n";
+            // Logica per EMPTYING_ON_EXIT
+            break;
+
+        case HOT_ON:
+            std::cout << "Stato: HOT_ON\n";
+            // Logica per HOT_ON
+            break;
+        case HOT_ON_ENTER:
+            this->state = HOT_ON;
+            digitalWrite(this->greenLedPin, LOW);
+            digitalWrite(this->redLedPin, HIGH);
+            close();
+            resetScreen();
+            lcd.setCursor(2, 1);
+            lcd.print("PROBLEM DETECTED");
+            break;
+        case HOT_ON_EXIT:
+            std::cout << "Stato: HOT_ON_EXIT\n";
+            // Logica per HOT_ON_EXIT
+            break;
+
+        case WRECEIVED_ON:
+            std::cout << "Stato: WRECEIVED_ON\n";
+            // Logica per WRECEIVED_ON
+            break;
+        case WRECEIVED_ON_ENTER:
+            std::cout << "Stato: WRECEIVED_ON_ENTER\n";
+            // Logica per WRECEIVED_ON_ENTER
+            break;
+
+        default:
+            std::cout << "Stato non riconosciuto!\n";
+            break;
+    }
+
+    Svariable[this->idButtonOpen] = 0;//pulisco gli stati ogni volta
+    Svariable[this->idButtonClose] = 0;
+    Svariable[this->id] = this->state;
     Serial.println(Svariable[id]);
 }
 
 void BinTask::open() {
-    this->door.write(90);
+    door.write(90);
     Serial.println("open");
 }
 
 void BinTask::close() {
-    this->door.write(0);
+    door.write(0);
     Serial.println("close");
 }
 
 void BinTask::empty(){
-    this->door.write(-90);
+    door.write(-90);
     Serial.println("empty");
+}
+
+//reset dello schermo
+void BinTask::resetScreen() {
+  lcd.backlight();
+  lcd.display();
+  lcd.setCursor(0, 0);
+  lcd.clear();
 }
 
 bool BinTask::elapsed(unsigned long time){
