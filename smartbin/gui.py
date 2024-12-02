@@ -1,45 +1,62 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QProgressBar
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import ttk
 import serial
-    
-class OperatorDashboard(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-        self.serial = serial.Serial('COM4', 9600)
+import threading
 
-    def initUI(self):
-        self.setWindowTitle("Operator Dashboard")
-        layout = QVBoxLayout()
+arduino = serial.Serial(port='/dev/ttyUSB0', baudrate=9600, timeout=1)
 
-        self.temp_label = QLabel("Temperature: 0°C")
-        self.level_label = QLabel("Waste Level: 0%")
-        self.state_label = QLabel("State: Available")
-        self.progress = QProgressBar()
-        self.progress.setValue(0)
+def update_distance():
+    """Aggiorna la distanza letta dal sonar e dal sensore"""
+    try:
+        while True:
+            if arduino.in_waiting > 0:
+                distanza = arduino.readline().decode('utf-8').strip() 
+                temperatura = arduino.readline().decode('utf-8').strip()
+                if distanza.isdigit():
+                    distance_label.config(text=f"Livello bidone: {distanza} %")
+                    temperature_label.config(text=f"Temperatura: {temperatura} °")
+    except Exception as e:
+        print(f"Errore: {e}")
 
-        self.empty_button = QPushButton("Empty Container")
-        self.empty_button.clicked.connect(self.emptyContainer)
-        self.restore_button = QPushButton("Restore System")
-        self.restore_button.clicked.connect(self.restoreSystem)
+def empty_bin():
+    try:
+        arduino.write(b'E')
+    except Exception as e:
+        messagebox.showerror("Errore", f"Non è stato possibile inviare il comando: {e}")
 
-        layout.addWidget(self.temp_label)
-        layout.addWidget(self.level_label)
-        layout.addWidget(self.state_label)
-        layout.addWidget(self.progress)
-        layout.addWidget(self.empty_button)
-        layout.addWidget(self.restore_button)
+def reset_bin():
+    try:
+        arduino.write(b'R')
+    except Exception as e:
+        messagebox.showerror("Errore", f"Non è stato possibile inviare il comando: {e}")
 
-        self.setLayout(layout)
+# Crea la finestra principale
+root = tk.Tk()
+root.title("Smart bin")
 
-    def emptyContainer(self):
-        self.serial.write(b'EMPTY\n')
+# Label per visualizzare la distanza
+distance_label = tk.Label(root, text="Livello bidone: -- %", font=("Helvetica", 16))
+distance_label.pack(pady=20)
 
-    def restoreSystem(self):
-        self.serial.write(b'RESTORE\n')
+# Label per visualizzare la temperatura
+temperature_label = tk.Label(root, text="Temperatura: -- °", font=("Helvetica", 16))
+temperature_label.pack(pady=20)
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = OperatorDashboard()
-    ex.show()
-    sys.exit(app.exec_())
+# Bottone per svuotare il bidone
+empty_button = tk.Button(root, text="Empty the container", command=empty_bin, font=("Helvetica", 14))
+empty_button.pack(pady=20)
+
+# Bottone per resettare la macchina
+reset_button = tk.Button(root, text="RESTORE", command=reset_bin, font=("Helvetica", 14))
+reset_button.pack(pady=20)
+
+# Thread per aggiornare la distanza in modo asincrono
+thread = threading.Thread(target=update_distance, daemon=True)
+thread.start()
+
+# Avvia la GUI
+root.mainloop()
+
+# Chiudi la connessione seriale quando la GUI viene chiusa
+arduino.close()

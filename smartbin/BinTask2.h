@@ -26,12 +26,19 @@ class BinTask2 : public Task{
         ServoTimer2 door;
 
         enum Triggers{};
+        enum EventId{};
         SimpleFSM fsm;
 
         void open();
         void close();
         void empty();
         void resetScreen();
+
+        bool buttonOpen();
+        bool buttonClose();
+        bool temperature();
+        bool isFull();
+
 
     public:
         void tick();
