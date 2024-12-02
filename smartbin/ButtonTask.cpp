@@ -9,8 +9,6 @@ void ButtonTask::tick(){
       Svariable[id] = LOW;
     }
     precState = currState;
-   Serial.print("button ");
-    Serial.println(id);
 }
 
 ButtonTask::ButtonTask(int pin){

@@ -1,13 +1,13 @@
 #include "BinTask.h"
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
-#include <ServoTimer2.h>
+#include <Servo.h>
 
-#define MIN_FREE_SPACE 1 //distanza minima in cm tra il sonar e il contenuto del bidone 
+#define MIN_FREE_SPACE 5 //distanza minima in cm tra il sonar e il contenuto del bidone 
 #define MAX_TEMP 60
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
-ServoTimer2 door;
+Servo door;
 
 BinTask::BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin) {
     this->pin = pin;
@@ -77,8 +77,7 @@ void BinTask::tick() {
         default:
             break;
     }*/
-    Serial.print("bintask ");
-    Serial.println(id);
+
     switch (this->state) {
         case CLOSED_ON:
             if (Svariable[this->idWaste] < MIN_FREE_SPACE) {
@@ -89,6 +88,7 @@ void BinTask::tick() {
                 this->state = OPENED_ON_ENTER;
             }
             break;
+
         case CLOSED_ON_ENTER:
             this->state = CLOSED_ON;
             digitalWrite(this->greenLedPin, HIGH);
@@ -100,15 +100,29 @@ void BinTask::tick() {
             lcd.setCursor(4, 2);
             lcd.print("TO ENTER WASTE");
             break;
+
         case CLOSED_ON_EXIT:
             // Logica per CLOSED_ON_EXIT
             break;
 
         case OPENED_ON:
-            // Logica per OPENED_ON
+            if (Svariable[this->idWaste] < MIN_FREE_SPACE ||
+                Svariable[this->idTemperature] > MAX_TEMP || 
+                Svariable[this->idButtonClose] == HIGH ||
+                elapsed(5000))
+            {
+                close();
+                resetScreen();
+                lcd.setCursor(3, 1);
+                lcd.print("WASTE RECEIVED");
+                this->nextState = CLOSED_ON_ENTER;
+                this->state = WAITING_ON_ENTER;
+            }
             break;
+
         case OPENED_ON_ENTER:
             this->state = OPENED_ON;
+            this->timeReference = millis();
             open();
             resetScreen();
             lcd.setCursor(5, 1);
@@ -116,6 +130,7 @@ void BinTask::tick() {
             lcd.setCursor(5, 2);
             lcd.print("WHEN DONE");
             break;
+
         case OPENED_ON_EXIT:
             resetScreen();
             lcd.setCursor(3, 1);
@@ -123,13 +138,15 @@ void BinTask::tick() {
             //Wait T2 seconds
             this->state = CLOSED_ON_ENTER;
             break;
+
         case OPENED_TRANS_CLOSED:
             // Logica per OPENED_TRANS_CLOSED
             break;
 
         case FULL_ON:
-            Serial.println(Svariable[this->idWaste]);
+            //Serial.println(Svariable[this->idWaste]);
             break;
+
         case FULL_ON_ENTER:
             this->state = FULL_ON;
             digitalWrite(this->greenLedPin, LOW);
@@ -139,6 +156,7 @@ void BinTask::tick() {
             lcd.setCursor(3, 1);
             lcd.print("CONTAINER FULL");
             break;
+
         case FULL_ON_EXIT:
             // Logica per FULL_ON_EXIT
             break;
@@ -146,6 +164,7 @@ void BinTask::tick() {
         case EMPTYING_ON:
             // Logica per EMPTYING_ON
             break;
+
         case EMPTYING_ON_ENTER:
             this->state = EMPTYING_ON;
             digitalWrite(this->greenLedPin, HIGH);
@@ -155,6 +174,7 @@ void BinTask::tick() {
             lcd.setCursor(1, 1);
             lcd.print("EMPTYING CONTAINER");
             break;
+
         case EMPTYING_ON_EXIT:
             // Logica per EMPTYING_ON_EXIT
             break;
@@ -163,6 +183,7 @@ void BinTask::tick() {
             //Serial.println(Svariable[this->idTemperature]);
             // Logica per HOT_ON
             break;
+
         case HOT_ON_ENTER:
             this->state = HOT_ON;
             digitalWrite(this->greenLedPin, LOW);
@@ -172,25 +193,31 @@ void BinTask::tick() {
             lcd.setCursor(2, 1);
             lcd.print("PROBLEM DETECTED");
             break;
+
         case HOT_ON_EXIT:
             // Logica per HOT_ON_EXIT
             break;
 
-        case WRECEIVED_ON:
-            // Logica per WRECEIVED_ON
+        case WAITING_ON_ENTER:
+            this->timeReference = millis();
+            this->state = WAITING_ON;
             break;
-        case WRECEIVED_ON_ENTER:
-            // Logica per WRECEIVED_ON_ENTER
+
+        case WAITING_ON:
+            if(elapsed(2000)) {
+                Serial.println("PASSATO");
+                this->state = this->nextState;
+            }
             break;
 
         default:
             break;
     }
 
-    Svariable[this->idButtonOpen] = 0;//pulisco gli stati ogni volta
-    Svariable[this->idButtonClose] = 0;
+    //pulisco gli stati ogni volta
+    Svariable[this->idButtonOpen] = LOW;
+    Svariable[this->idButtonClose] = LOW;
     Svariable[this->id] = this->state;
-    Serial.println(Svariable[id]);
 }
 
 void BinTask::open() {

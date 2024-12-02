@@ -2,8 +2,6 @@
 #define __BINTASK__
 
 #include "Task.h"
-#include <ServoTimer2.h>
-#include <LiquidCrystal_I2C.h>
 
 #define CLOSED_ON_ENTER 0
 #define CLOSED_ON 1
@@ -26,8 +24,8 @@
 #define HOT_ON 14
 #define HOT_ON_EXIT 15
 
-#define WRECEIVED_ON 16
-#define WRECEIVED_ON_ENTER 17
+#define WAITING_ON_ENTER 16
+#define WAITING_ON 17
 
 class BinTask : public Task{
     private:
@@ -40,6 +38,7 @@ class BinTask : public Task{
         int idButtonOpen;
         int idButtonClose;
         unsigned long timeReference;
+        int nextState;
 
         void open();
         void close();

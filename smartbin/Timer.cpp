@@ -3,12 +3,8 @@
 
 volatile bool timerFlag;
 
-ISR(TIMER1_COMPA_vect){
-  timerFlag = true;
-}
-
 Timer::Timer(){
-  timerFlag = false;  
+  timerFlag = true;  
 }
 
 void Timer::setupFreq(int freq){
@@ -27,7 +23,7 @@ void Timer::setupFreq(int freq){
    *
    * assuming a prescaler = 1024 => OCR1A = (16*2^10)/freq 
    */
-  OCR1A = 16*1024/freq; 
+  OCR1A = (F_CPU / (2 * 1024 * freq)) - 1; 
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
   // Set CS11 for 8 prescaler
@@ -57,7 +53,7 @@ void Timer::setupPeriod(int period){
    *
    * assuming a prescaler = 1024 => OCR1A = (16*2^10)* period/1000 (being in ms) 
    */
-  OCR1A = 16.384*period; 
+  OCR1A = (16 * period) / 1024; 
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
   // Set CS11 for 8 prescaler

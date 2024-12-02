@@ -56,12 +56,20 @@ void setup() {
 
     scheduler.init(50);
 
-    t0->init(1000, TEMP_ID);
-    t1->init(2000, USRD_ID);
-    t2->init(500, WSTD_ID);
-    t3->init(100, BTN1_ID);
-    t4->init(100, BTN2_ID);
-    t5->init(200, BIN_ID);
+    t0->SetSvariable(scheduler.Svariables);
+    t1->SetSvariable(scheduler.Svariables);
+    t2->SetSvariable(scheduler.Svariables);
+    t3->SetSvariable(scheduler.Svariables);
+    t4->SetSvariable(scheduler.Svariables);
+    t5->SetSvariable(scheduler.Svariables);
+
+    t0->init(10000, TEMP_ID);
+    t1->init(20000, USRD_ID);
+    t2->init(20000, WSTD_ID);
+    t3->init(1000, BTN1_ID);
+    t4->init(1000, BTN2_ID);
+    t5->init(2000, BIN_ID);
+
 }
 
 void loop() {
