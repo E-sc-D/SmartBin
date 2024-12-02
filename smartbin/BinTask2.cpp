@@ -26,13 +26,13 @@ void BinTask2::init(int period, int id) {
     Task::init(period, id);
     lcd.begin(20, 4);
     resetScreen();
-    State s[] = {
-            State("opened",    opened_on_enter,    opened_on,    opened_on_exit,   false),
-            State("closed",    closed_on_enter,    closed_on,    closed_on_exit,   false),
-            State("full",      full_on_enter,      full_on,      full_on_exit,     false),
-            State("emptying",  emptying_on_enter,  emptying_on,  emptying_on_exit, false),
-            State("hot",       hot_on_enter,       hot_on,       hot_on_exit,      false),
-            State("wreceived", wreceived_on_enter, wreceived_on, NULL ,            false)
+    State s[] = {[this](){
+            State("opened",    [this]() { opened_on_enter(); },    [this]() {opened_on();},    [this]() {opened_on_exit();},   false),
+            State("closed",    [this]() { closed_on_enter(); },    [this]() {closed_on();},    [this]() {closed_on_exit();},   false),
+            State("full",      [this]() { full_on_enter(); },      [this]() {full_on();},      [this]() {full_on_exit();},     false),
+            State("emptying",  [this]() { emptying_on_enter(); },  [this]() {emptying_on();},  [this]() {emptying_on_exit();}, false),
+            State("hot",       [this]() { hot_on_enter(); },       [this]() {hot_on();},       [this]() {hot_on_exit();},      false),
+            State("wreceived", [this]() { wreceived_on_enter(); }, [this]() {wreceived_on();}, nullptr ,                       false)
     };
     Transition transition[];
     TimedTransition timedTransitions[] = {
