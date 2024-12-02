@@ -20,17 +20,15 @@ class BinTask : public Task{
         int idButtonOpen;
         int idButtonClose;
         ServoTimer2 door;
-         unsigned long timeReference;
+        unsigned long timeReference;
         int amountOfWait;
-        int prevState;
 
         void open();
         void close();
         void empty();
-        void wait(unsigned long amountOfWait);
     public:
         void tick();
         bool elapsed(unsigned long time);
-        BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin );
+        BinTask2(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin );
 };
 #endif
