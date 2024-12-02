@@ -34,7 +34,7 @@ void BinTask2::init(int period, int id) {
             State("hot",       [this]() { hot_on_enter(); },       [this]() {hot_on();},       [this]() {hot_on_exit();},      false),
             State("wreceived", [this]() { wreceived_on_enter(); }, [this]() {wreceived_on();}, nullptr ,                       false)
     };
-    Transition transition[];
+    Transition transition[3];
     TimedTransition timedTransitions[] = {
             TimedTransition(&s[1], &s[0], 6000), //da aperto a chiuso
             TimedTransition(&s[3], &s[1], 6000), //da aperto a chiuso
