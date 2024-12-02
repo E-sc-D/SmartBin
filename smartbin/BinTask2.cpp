@@ -21,6 +21,8 @@ BinTask2::BinTask2(int idTemperature, int idWaste, int idButtonOpen, int idButto
 
 void BinTask2::init(int period, int id) {
     Task::init(period, id);
+    lcd.init();
+    resetScreen();
     fsm.add(timedTransitions, (sizeof(timedTransitions) / sizeof(TimedTransition)));
     fsm.setInitialState(&s[0]);
 }
@@ -55,8 +57,13 @@ void BinTask2::closed_on() {
 void BinTask2::closed_on_enter() {
     state = STATUS_CLOSED;
     digitalWrite(greenLedPin, HIGH);
+    digitalWrite(redLedPin, LOW);
     close();
-    
+    resetScreen();
+    lcd.setCursor(5, 1);
+    lcd.print("PRESS OPEN");
+    lcd.setCursor(4, 2);
+    lcd.print("TO ENTER WASTE");
 }
 
 void BinTask2::closed_on_exit() {
@@ -70,10 +77,18 @@ void BinTask2::opened_on() {
 void BinTask2::opened_on_enter() {
     state = STATUS_OPENED;
     open();
+    resetScreen();
+    lcd.setCursor(5, 1);
+    lcd.print("PRESS CLOSE");
+    lcd.setCursor(5, 2);
+    lcd.print("WHEN DONE");
 }
 
 void BinTask2::opened_on_exit() {
-
+    resetScreen();
+    lcd.setCursor(3, 1);
+    lcd.print("WASTE RECEIVED");
+    //Wait T2 seconds
 }
 
 void BinTask2::opened_trans_closed() {
@@ -86,6 +101,12 @@ void BinTask2::full_on() {
 
 void BinTask2::full_on_enter() {
     state = STATUS_FULL;
+    digitalWrite(greenLedPin, LOW);
+    digitalWrite(redLedPin, HIGH);
+    close();
+    resetScreen();
+    lcd.setCursor(3, 1);
+    lcd.print("CONTAINER FULL");
 }
 
 void BinTask2::full_on_exit() {
@@ -98,7 +119,12 @@ void BinTask2::emptying_on() {
 
 void BinTask2::emptying_on_enter() {
     state = STATUS_EMPTYING;
+    digitalWrite(greenLedPin, HIGH);
+    digitalWrite(redLedPin, LOW);
     empty();
+    resetScreen();
+    lcd.setCursor(1, 1);
+    lcd.print("EMPTYING CONTAINER");
 }
 
 void BinTask2::emptying_on_exit() {
@@ -111,10 +137,24 @@ void BinTask2::hot_on() {
 
 void BinTask2::hot_on_enter() {
     state = STATUS_HOT;
+    digitalWrite(greenLedPin, LOW);
+    digitalWrite(redLedPin, HIGH);
+    close();
+    resetScreen();
+    lcd.setCursor(2, 1);
+    lcd.print("PROBLEM DETECTED");
 }
 
 void BinTask2::hot_on_exit() {
 
+}
+
+//reset dello schermo
+void resetScreen() {
+  lcd.backlight();
+  lcd.display();
+  lcd.setCursor(0, 0);
+  lcd.clear();
 }
 
 void BinTask2::wait(unsigned long amountOfWait){ 

@@ -3,6 +3,7 @@
 
 #include "Task.h"
 #include <ServoTimer2.h>
+#include <LiquidCrystal_I2C.h>
 #include <SimpleFSM.h>
 
 #define STATUS_CLOSED 0
@@ -22,8 +23,9 @@ class BinTask2 : public Task{
         int idWaste;
         int idButtonOpen;
         int idButtonClose;
-        ServoTimer2 door;
         unsigned long timeReference;
+        ServoTimer2 door;
+        LiquidCrystal_I2C lcd(39, 20, 4);
 
         enum Triggers{};
         SimpleFSM fsm;

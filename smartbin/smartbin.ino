@@ -1,5 +1,4 @@
 #include <Wire.h>
-#include <LiquidCrystal_I2C.h>
 #include <LowPower.h>
 #include <PinChangeInterrupt.h>
 #include "ButtonTask.h"
@@ -28,8 +27,6 @@
 #define BTN2_ID 4
 #define BIN_ID  5
 
-int green_led_status = LOW;
-int red_led_status = LOW;
 Scheduler scheduler;
 
 void setup() {
