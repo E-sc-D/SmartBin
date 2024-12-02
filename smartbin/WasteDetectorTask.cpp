@@ -26,7 +26,7 @@ float WasteDetectorTask::BinUsable() {
 
 void WasteDetectorTask::tick() {
     //se il bidone è aperto, misura il livello di scarti via arduino
-    if(Svariable[idBin] == 1){
+    if(Svariable[idBin] == 4){
         Svariable[id] = (int)BinUsable();
     }
 }

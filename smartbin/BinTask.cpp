@@ -159,7 +159,7 @@ void BinTask::tick() {
             break;
 
         case HOT_ON:
-            Serial.println(Svariable[this->idTemperature]);
+            //Serial.println(Svariable[this->idTemperature]);
             // Logica per HOT_ON
             break;
         case HOT_ON_ENTER:
