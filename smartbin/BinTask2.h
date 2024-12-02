@@ -3,7 +3,6 @@
 
 #include "Task.h"
 #include <ServoTimer2.h>
-#include <LiquidCrystal_I2C.h>
 #include <SimpleFSM.h>
 
 #define STATUS_CLOSED 0
@@ -25,35 +24,19 @@ class BinTask2 : public Task{
         int idButtonClose;
         unsigned long timeReference;
         ServoTimer2 door;
-        LiquidCrystal_I2C lcd(39, 20, 4);
 
         enum Triggers{};
         SimpleFSM fsm;
-        State s[
-            State("opened",    opened_on_enter,    opened_on,    opened_on_exit,   bool is_final = false);
-            State("closed",    closed_on_enter,    closed_on,    closed_on_exit,   bool is_final = false);
-            State("full",      full_on_enter,      full_on,      full_on_exit,     bool is_final = false);
-            State("emptying",  emptying_on_enter,  emptying_on,  emptying_on_exit, bool is_final = false);
-            State("hot",       hot_on_enter,       hot_on,       hot_on_exit,      bool is_final = false);
-            State("wreceived", wreceived_on_enter, wreceived_on, NULL ,            bool is_final = false);
-        ];
-        Transition transition[];
-        TimedTransition timedTransitions[
-            TimedTransition(&s[1], &s[0], 6000), //da aperto a chiuso
-            TimedTransition(&s[3], &s[1], 6000), //da aperto a chiuso
-        ]
 
         void open();
         void close();
         void empty();
-        void wait(unsigned long amountOfWait);
+        void resetScreen();
 
     public:
         void tick();
-        bool elapsed(unsigned long time);
         void init(int period, int id) override;
-        BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin);
-
+        BinTask2(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin);
         void closed_on();
         void closed_on_enter();
         void closed_on_exit();

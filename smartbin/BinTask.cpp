@@ -4,16 +4,19 @@
 #define MIN_FREE_SPACE 1 //distanza minima in cm tra il sonar e il contenuto del bidone 
 #define MAX_TEMP 60
 
-BinTask::BinTask( int idTemperature, int idWaste, int idButtonOpen,int idButtonClose,int pin) {
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+BinTask::BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin) {
+    this->pin = pin;
+    this->greenLedPin = greenLedPin;
+    this->redLedPin = redLedPin;
     this->idTemperature = idTemperature;
     this->idWaste = idWaste;
     this->idButtonOpen = idButtonOpen;
     this->idButtonClose = idButtonClose;
     this->state = STATUS_CLOSED;
-    this->pin = pin;
-    this->door.attach(this->pin);
     this->timeReference = 0;
-    Serial.println("here");
+    this->door.attach(this->pin);
     //the led green starts on
     //lcd shows text for closed state
 }
@@ -44,7 +47,7 @@ void BinTask::tick() {
                 state = STATUS_CLOSED;
                 //change text and wait for T2
                 close();
-                wait(3000);
+                //wait(3000);
             }
             break;
 
@@ -59,7 +62,7 @@ void BinTask::tick() {
             //il servo si apre al contrario
             //dopo T4 si richiude
             empty();
-            wait(4);
+            //wait(4);
             close();
             state = STATUS_CLOSED;
             break; 
@@ -69,9 +72,9 @@ void BinTask::tick() {
             break;
 
         case STATUS_WAITING:
-            if(elapsed(amountOfWait)){
+            /*if(elapsed(amountOfWait)){
                 state = prevState;
-            }
+            }*/
             break;
 
         default:
@@ -97,13 +100,6 @@ void BinTask::close() {
 void BinTask::empty(){
     this->door.write(-90);
     Serial.println("empty");
-}
-
-void BinTask::wait(unsigned long amountOfWait){ 
-    prevState = state;
-    state = STATUS_WAITING;
-    this->amountOfWait = amountOfWait;
-    timeReference = millis();
 }
 
 bool BinTask::elapsed(unsigned long time){

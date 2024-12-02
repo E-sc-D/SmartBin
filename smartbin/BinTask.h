@@ -3,6 +3,7 @@
 
 #include "Task.h"
 #include <ServoTimer2.h>
+#include <LiquidCrystal_I2C.h>
 
 #define STATUS_CLOSED 0
 #define STATUS_OPENED 1
@@ -14,14 +15,15 @@
 class BinTask : public Task{
     private:
         int pin;
+        int greenLedPin;
+        int redLedPin;
         int state;
         int idTemperature;
         int idWaste;
         int idButtonOpen;
         int idButtonClose;
-        ServoTimer2 door;
         unsigned long timeReference;
-        int amountOfWait;
+        ServoTimer2 door;
 
         void open();
         void close();
@@ -29,6 +31,6 @@ class BinTask : public Task{
     public:
         void tick();
         bool elapsed(unsigned long time);
-        BinTask2(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin );
+        BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin);
 };
 #endif
