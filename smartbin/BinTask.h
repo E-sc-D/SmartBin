@@ -3,7 +3,7 @@
 
 #include "Task.h"
 #include <ServoTimer2.h>
-#include <LiquidCrystal_I2C.h>
+
 
 #define STATUS_CLOSED 0
 #define STATUS_OPENED 1

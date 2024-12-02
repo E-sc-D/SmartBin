@@ -8,16 +8,16 @@
 LiquidCrystal_I2C lcd(39, 20, 4);
 
 BinTask2::BinTask2(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin) {
-    this->pin = pin;
-    this->greenLedPin = greenLedPin;
-    this->redLedPin = redLedPin;
-    this->state = STATUS_CLOSED;
-    this->idTemperature = idTemperature;
-    this->idWaste = idWaste;
-    this->idButtonOpen = idButtonOpen;
-    this->idButtonClose = idButtonClose;
-    this->timeReference = 0;
-    this->door.attach(this->pin);
+    pin = pin;
+    greenLedPin = greenLedPin;
+    redLedPin = redLedPin;
+    state = STATUS_CLOSED;
+    idTemperature = idTemperature;
+    idWaste = idWaste;
+    idButtonOpen = idButtonOpen;
+    idButtonClose = idButtonClose;
+    timeReference = 0;
+    door.attach(pin);
     //the led green starts on
     //lcd shows text for closed state
 }
@@ -26,43 +26,43 @@ void BinTask2::init(int period, int id) {
     Task::init(period, id);
     lcd.begin(20, 4);
     resetScreen();
-    State s[] = {[this](){
-            State("opened",    [this]() { opened_on_enter(); },    [this]() {opened_on();},    [this]() {opened_on_exit();},   false),
-            State("closed",    [this]() { closed_on_enter(); },    [this]() {closed_on();},    [this]() {closed_on_exit();},   false),
-            State("full",      [this]() { full_on_enter(); },      [this]() {full_on();},      [this]() {full_on_exit();},     false),
-            State("emptying",  [this]() { emptying_on_enter(); },  [this]() {emptying_on();},  [this]() {emptying_on_exit();}, false),
-            State("hot",       [this]() { hot_on_enter(); },       [this]() {hot_on();},       [this]() {hot_on_exit();},      false),
-            State("wreceived", [this]() { wreceived_on_enter(); }, [this]() {wreceived_on();}, nullptr ,                       false)
+    State s[] = {
+            State("opened",    opened_on_enter,    opened_on,   opened_on_exit,   false),
+            State("closed",    closed_on_enter,    closed_on,   closed_on_exit,   false),
+            State("full",      full_on_enter,      full_on,     full_on_exit,     false),
+            State("emptying",  emptying_on_enter,  emptying_on, emptying_on_exit, false),
+            State("hot",       hot_on_enter,       hot_on,      hot_on_exit,      false),
+            State("wreceived", wreceived_on_enter, wreceived_on, NULL ,            false)
     };
     Transition transition[3];
     TimedTransition timedTransitions[] = {
             TimedTransition(&s[1], &s[0], 6000), //da aperto a chiuso
             TimedTransition(&s[3], &s[1], 6000), //da aperto a chiuso
     };
-    fsm.add(timedTransitions, (sizeof(timedTransitions []) / sizeof(TimedTransition)));
+    fsm.add(timedTransitions, (sizeof(timedTransitions) / sizeof(TimedTransition)));
     fsm.setInitialState(&s[0]);
 }
 
 void BinTask2::tick() {
     fsm.run();
-
+    Serial.println(greenLedPin)
     Svariable[idButtonOpen] = 0;//pulisco gli stati ogni volta
     Svariable[idButtonClose] = 0;
     Svariable[id] = state;
 }
 
 void BinTask2::open() {
-    this->door.write(90);
+    door.write(90);
     Serial.println("open");
 }
 
 void BinTask2::close() {
-    this->door.write(0);
+    door.write(0);
     Serial.println("close");
 }
 
 void BinTask2::empty(){
-    this->door.write(-90);
+    door.write(-90);
     Serial.println("empty");
 }
 
@@ -79,9 +79,9 @@ void BinTask2::closed_on() {
 }
 
 void BinTask2::closed_on_enter() {
-    this->state = STATUS_CLOSED;
-    digitalWrite(this->greenLedPin, HIGH);
-    digitalWrite(this->redLedPin, LOW);
+    state = STATUS_CLOSED;
+    digitalWrite(greenLedPin, HIGH);
+    digitalWrite(redLedPin, LOW);
     close();
     resetScreen();
     lcd.setCursor(5, 1);
@@ -99,7 +99,7 @@ void BinTask2::opened_on() {
 }
 
 void BinTask2::opened_on_enter() {
-    this->state = STATUS_OPENED;
+    state = STATUS_OPENED;
     open();
     resetScreen();
     lcd.setCursor(5, 1);
@@ -124,9 +124,9 @@ void BinTask2::full_on() {
 }
 
 void BinTask2::full_on_enter() {
-    this->state = STATUS_FULL;
-    digitalWrite(this->greenLedPin, LOW);
-    digitalWrite(this->redLedPin, HIGH);
+    state = STATUS_FULL;
+    digitalWrite(greenLedPin, LOW);
+    digitalWrite(redLedPin, HIGH);
     close();
     resetScreen();
     lcd.setCursor(3, 1);
@@ -142,9 +142,9 @@ void BinTask2::emptying_on() {
 }
 
 void BinTask2::emptying_on_enter() {
-    this->state = STATUS_EMPTYING;
-    digitalWrite(this->greenLedPin, HIGH);
-    digitalWrite(this->redLedPin, LOW);
+    state = STATUS_EMPTYING;
+    digitalWrite(greenLedPin, HIGH);
+    digitalWrite(redLedPin, LOW);
     empty();
     resetScreen();
     lcd.setCursor(1, 1);
@@ -160,9 +160,9 @@ void BinTask2::hot_on() {
 }
 
 void BinTask2::hot_on_enter() {
-    this->state = STATUS_HOT;
-    digitalWrite(this->greenLedPin, LOW);
-    digitalWrite(this->redLedPin, HIGH);
+    state = STATUS_HOT;
+    digitalWrite(greenLedPin, LOW);
+    digitalWrite(redLedPin, HIGH);
     close();
     resetScreen();
     lcd.setCursor(2, 1);

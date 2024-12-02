@@ -4,7 +4,6 @@
 #define MIN_FREE_SPACE 1 //distanza minima in cm tra il sonar e il contenuto del bidone 
 #define MAX_TEMP 60
 
-LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 BinTask::BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin) {
     this->pin = pin;
