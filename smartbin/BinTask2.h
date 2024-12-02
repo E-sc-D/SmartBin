@@ -3,6 +3,7 @@
 
 #include "Task.h"
 #include <ServoTimer2.h>
+#include <LiquidCrystal_I2C.h>
 #include <SimpleFSM.h>
 
 #define STATUS_CLOSED 0
@@ -15,13 +16,16 @@
 class BinTask2 : public Task{
     private:
         int pin;
+        int greenLedPin;
+        int redLedPin;
         int state;
         int idTemperature;
         int idWaste;
         int idButtonOpen;
         int idButtonClose;
-        ServoTimer2 door;
         unsigned long timeReference;
+        ServoTimer2 door;
+        LiquidCrystal_I2C lcd(39, 20, 4);
 
         enum Triggers{};
         enum EventId{};
@@ -65,7 +69,7 @@ class BinTask2 : public Task{
         void tick();
         bool elapsed(unsigned long time);
         void init(int period, int id) override;
-        BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin );
+        BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin);
 
         void closed_on();
         void closed_on_enter();

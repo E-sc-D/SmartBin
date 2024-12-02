@@ -1,5 +1,4 @@
 #include <Wire.h>
-#include <LiquidCrystal_I2C.h>
 #include <LowPower.h>
 #include <PinChangeInterrupt.h>
 #include "ButtonTask.h"
@@ -28,8 +27,6 @@
 #define BTN2_ID 4
 #define BIN_ID  5
 
-int green_led_status = LOW;
-int red_led_status = LOW;
 Scheduler scheduler;
 
 void setup() {
@@ -45,10 +42,10 @@ void setup() {
 
     Task* t0 = new TemperatureTask(TEMP_SENSOR);
     Task* t1 = new UserDetectorTask(PIR);
-    Task* t2 = new WasteDetectorTask(SONAR_TRIG,SONAR_ECHO,BIN_ID);
+    Task* t2 = new WasteDetectorTask(SONAR_TRIG, SONAR_ECHO, BIN_ID);
     Task* t3 = new ButtonTask(OPEN_BUTTON);
     Task* t4 = new ButtonTask(CLOSE_BUTTON);
-    Task* t5 = new BinTask(TEMP_ID,WSTD_ID,BTN1_ID,BTN2_ID,SERVO);
+    Task* t5 = new BinTask(TEMP_ID, WSTD_ID, BTN1_ID, BTN2_ID, SERVO, GREEN_LED, RED_LED);
 
     scheduler.addTask(t0);
     scheduler.addTask(t1);
