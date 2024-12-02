@@ -19,6 +19,12 @@ BinTask2::BinTask2( int idTemperature, int idWaste, int idButtonOpen,int idButto
     //lcd shows text for closed state
 }
 
+void BinTask2::init(int period, int id) {
+    Task::init(period, id);
+    fsm.add(timedTransitions, (sizeof(timedTransitions) / sizeof(transition)));
+    fsm.setInitialState(&s[0]);
+}
+
 void BinTask2::tick() {
   Serial.println(millis());
   Serial.println(state);

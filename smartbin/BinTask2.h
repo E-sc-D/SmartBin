@@ -37,6 +37,7 @@ class BinTask2 : public Task{
     public:
         void tick();
         bool elapsed(unsigned long time);
+        void init(int period, int id) override;
         BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin );
 
         void closed_on();
