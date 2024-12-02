@@ -24,7 +24,7 @@ BinTask2::BinTask2(int idTemperature, int idWaste, int idButtonOpen, int idButto
 
 void BinTask2::init(int period, int id) {
     Task::init(period, id);
-    lcd.init();
+    lcd.begin(20, 4);
     resetScreen();
     State s[] = {
             State("opened",    opened_on_enter,    opened_on,    opened_on_exit,   false),
