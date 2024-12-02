@@ -6,6 +6,7 @@ UserDetectorTask::UserDetectorTask(int pin){
 }
 
 void UserDetectorTask::tick(){
+  Serial << "usdr " << id << '\n';
     //la svariable non gli serve
     //se il programma gira allora l'user c'è
     //altrimenti no
