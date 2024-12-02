@@ -77,7 +77,8 @@ void BinTask::tick() {
         default:
             break;
     }*/
-    Serial << "bintask " << id << '\n';
+    Serial.print("bintask ");
+    Serial.println(id);
     switch (this->state) {
         case CLOSED_ON:
             if (Svariable[this->idWaste] < MIN_FREE_SPACE) {
