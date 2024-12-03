@@ -39,11 +39,11 @@ def reset_bin():
 # Crea la finestra principale
 root = tk.Tk()
 root.title("Smart bin")
-root.geometry("400x400")
+root.geometry("400x396")
 root.configure(bg='DarkOrchid2')
 
 # Add image file 
-bg = PhotoImage(file="bidone.png")
+bg = PhotoImage(file="images/bidone.png")
 
 label1 = Label(root, image=bg)
 label1.place(x=0, y=0, relwidth=1, relheight=1)
@@ -65,7 +65,7 @@ temperature_label.configure(bg="gray12")
 
 # Bottone per svuotare il bidone
 empty_button = tk.Button(root,bg='gray12', text="Empty the Container", fg="yellow3", command=empty_bin, font=("Rockwell", 14))
-empty_button.pack(pady=(150, 0))
+empty_button.pack(pady=(190, 0))
 
 # Bottone per resettare la macchina
 reset_button = tk.Button(root,bg='gray12', text="RESTORE", fg="yellow3", command=reset_bin, font=("Rockwell", 14))
