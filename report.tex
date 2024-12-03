@@ -1,0 +1,93 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage{alltt, fancyvrb, url}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[italian]{babel}
+\usepackage[italian]{cleveref}
+\title{Progetto di IOT
+    \\ SmartBin}
+
+\author{Scorza Edoardo 0001077424 \\ Giorgini Matteo 0001136576 \\ Giuseppe Argentiere }
+\date{1 dicembre 2024}   
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Hardware}
+La implementazione fisca del circuito è realizzata con i componenti 
+richesti dalla specifica:
+\begin{itemize}
+    \item \textbf{LCD I2C}
+    \begin{itemize}
+        \item SDA: A4
+        \item SCL: A5
+    \end{itemize}
+    \item \textbf{Bottone Open}
+    \begin{itemize}
+        \item Pin: 6
+    \end{itemize}
+    \item \textbf{Bottone Close}
+    \begin{itemize}
+        \item Pin: 7
+    \end{itemize}
+    \item \textbf{Passive Infrared (PIR Sensor)}
+    \begin{itemize}
+        \item Pin: 2
+    \end{itemize}
+    \item \textbf{Sonar}
+    \begin{itemize}
+        \item Trig: 4
+        \item Echo: 5
+    \end{itemize}
+    \item \textbf{Red LED}
+    \begin{itemize}
+        \item Pin: 8
+    \end{itemize}
+    \item \textbf{Green LED}
+    \begin{itemize}
+        \item Pin: 9
+    \end{itemize}
+    \item \textbf{Temp Sensor (LM35)}
+    \begin{itemize}
+        \item Pin: A3
+    \end{itemize}
+    \item \textbf{Servo Motor}
+    \begin{itemize}
+        \item Pin: 3
+    \end{itemize}
+\end{itemize}
+\chapter{Software}
+Per la realizzazione del software abbiamo optato per un sistema di task e FSM,
+inizialmente prevedavamo l'uso di una libreria, ma, il mancato supporto di Functional
+ci avrebbe impedito di realizzare un oggetto con dentro la FSM.
+\section{Sheduler}
+Per lo scheduler abbiamo usato la base trovata nel codice del corso e lo abbiamo 
+modificato per supportare la comunicazione di task
+\section{Task}
+La classe Task è una versione modificata di quella base, con un riferimento alla propria 
+variabile condivisa e un accesso a quelle delle altre task
+\section{FSM}
+Per semplicità e unicità delle specifiche, la macchina a stati finiti
+è realizzata con uno switch, nella quale sono definite transizioni, chiamate in entrata, uscita
+e Timeout
+\section{Struttura}
+Il progetto è separato in varie task, suddivise in due categorie:
+\begin{itemize}
+    \item \textbf{Task di Report} \\
+    Queste task si occupano di leggere e/o passare dati:
+    \begin{itemize}
+        \item \textbf{ButtonTask}
+        \item \textbf{TemperatureTask} (FSM)
+        \item \textbf{GuiTask}
+        \item \textbf{WasteDetectorTask}
+        \item \textbf{UserDetectorTask}
+    \end{itemize}
+    
+    \item \textbf{Task Decisionali} \\
+    Queste task operano sull'hardware:
+    \begin{itemize}
+        \item \textbf{BinTask} (FSM)
+    \end{itemize}
+\end{itemize}
+\end{document}
