@@ -28,7 +28,5 @@ void WasteDetectorTask::tick() {
     //se il bidone è aperto, misura il livello di scarti via arduino
     if(Svariable[idBin] == 4){
         Svariable[id] = (int)BinUsable();
-        Serial.println("WASTE LEVEL: ");
-        Serial.println(Svariable[id]);
     }
 }

@@ -10,22 +10,21 @@
 #define OPENED_ON_ENTER 3
 #define OPENED_ON 4
 #define OPENED_ON_EXIT 5
-#define OPENED_TRANS_CLOSED 6
 
-#define FULL_ON_ENTER 7
-#define FULL_ON 8
-#define FULL_ON_EXIT 9
+#define FULL_ON_ENTER 6
+#define FULL_ON 7
+#define FULL_ON_EXIT 8
 
-#define EMPTYING_ON_ENTER 10
-#define EMPTYING_ON 11
-#define EMPTYING_ON_EXIT 12
+#define EMPTYING_ON_ENTER 9
+#define EMPTYING_ON 10
+#define EMPTYING_ON_EXIT 11
 
-#define HOT_ON_ENTER 13
-#define HOT_ON 14
-#define HOT_ON_EXIT 15
+#define HOT_ON_ENTER 12
+#define HOT_ON 13
+#define HOT_ON_EXIT 14
 
-#define WAITING_ON_ENTER 16
-#define WAITING_ON 17
+#define WAITING_ON_ENTER 15
+#define WAITING_ON 16
 
 class BinTask : public Task{
     private:
@@ -34,6 +33,7 @@ class BinTask : public Task{
         int redLedPin;
         int state;
         int idTemperature;
+        int idGui;
         int idWaste;
         int idButtonOpen;
         int idButtonClose;
@@ -49,6 +49,6 @@ class BinTask : public Task{
         void tick();
         void init(int period, int id) override;
         bool elapsed(unsigned long time);
-        BinTask(int idTemperature, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin);
+        BinTask(int idTemperature, int idGui, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin);
 };
 #endif

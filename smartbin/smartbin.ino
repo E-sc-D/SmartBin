@@ -45,7 +45,7 @@ void setup() {
     Task* t2 = new WasteDetectorTask(SONAR_TRIG, SONAR_ECHO, BIN_ID);
     Task* t3 = new ButtonTask(OPEN_BUTTON);
     Task* t4 = new ButtonTask(CLOSE_BUTTON);
-    Task* t5 = new BinTask(TEMP_ID, WSTD_ID, BTN1_ID, BTN2_ID, SERVO, GREEN_LED, RED_LED);
+    Task* t5 = new BinTask(TEMP_ID, USRD_ID, WSTD_ID, BTN1_ID, BTN2_ID, SERVO, GREEN_LED, RED_LED);
 
     scheduler.addTask(t0);
     scheduler.addTask(t1);
