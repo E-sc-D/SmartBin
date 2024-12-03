@@ -1,5 +1,4 @@
 #include "TemperatureTask.h"
-#include "ButtonTask.h"
 #include <Arduino.h>
 
 TemperatureTask::TemperatureTask(int pin) {
@@ -10,7 +9,6 @@ TemperatureTask::TemperatureTask(int pin) {
 void TemperatureTask::tick() {
     //misura la temperatura via arduino
     Svariable[id] = isTooHot();
-    Serial.println(Svariable[id]);
 }
 
 int TemperatureTask::isTooHot() {

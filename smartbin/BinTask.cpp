@@ -8,15 +8,16 @@
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 Servo door;
 
-BinTask::BinTask(int idTemperature, int idGui, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin) {
+BinTask::BinTask(int idTemperature, int idUsr, int idWaste, int idButtonOpen, int idButtonClose, int idGui, int pin, int greenLedPin, int redLedPin) {
     this->pin = pin;
     this->greenLedPin = greenLedPin;
     this->redLedPin = redLedPin;
     this->idTemperature = idTemperature;
-    this->idGui = idGui;
+    this->idUsr = idUsr;
     this->idWaste = idWaste;
     this->idButtonOpen = idButtonOpen;
     this->idButtonClose = idButtonClose;
+    this->idGui = idGui;
     this->state = CLOSED_ON_ENTER;
     this->timeReference = 0;
 }
@@ -86,6 +87,7 @@ void BinTask::tick() {
                 this->state = HOT_ON_ENTER;
             } else if (Svariable[this->idButtonOpen] == HIGH) {
                 this->state = OPENED_ON_ENTER;
+                resetButtons();
             }
             break;
 
@@ -112,6 +114,7 @@ void BinTask::tick() {
                 elapsed(5000))
             {
                 this->state = OPENED_ON_EXIT;
+                resetButtons();
             }
             break;
 
@@ -164,6 +167,7 @@ void BinTask::tick() {
         case EMPTYING_ON:
             if(elapsed(3000)) {
                 this->state = EMPTYING_ON_EXIT;
+                Svariable[idWaste] = 100;
             }
             break;
 
@@ -215,8 +219,6 @@ void BinTask::tick() {
     }
 
     //pulisco gli stati ogni volta
-    Svariable[this->idButtonOpen] = LOW;
-    Svariable[this->idButtonClose] = LOW;
     Svariable[this->id] = this->state;
 }
 
@@ -238,6 +240,11 @@ void BinTask::resetScreen() {
   lcd.display();
   lcd.setCursor(0, 0);
   lcd.clear();
+}
+
+void BinTask::resetButtons() {
+    Svariable[this->idButtonOpen] = LOW;
+    Svariable[this->idButtonClose] = LOW;
 }
 
 bool BinTask::elapsed(unsigned long time){

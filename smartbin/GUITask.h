@@ -1,15 +1,17 @@
 #ifndef __GUITASK__  
 #define __GUITASK__  
 
-#include Task.h
+#include "Task.h"
 
 class GUITask: public Task{
-    //variabli
-
-public:
-    void init();
-    void tick();
-
-}
+    private:
+        int idWaste;
+        int idTemperature;
+    public:
+        void init();
+        void tick();
+        void printTempAndWaste();
+        GUITask(int idWaste, int idTemperature);
+};
 
 #endif

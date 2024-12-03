@@ -33,10 +33,11 @@ class BinTask : public Task{
         int redLedPin;
         int state;
         int idTemperature;
-        int idGui;
+        int idUsr;
         int idWaste;
         int idButtonOpen;
         int idButtonClose;
+        int idGui;
         unsigned long timeReference;
         int nextState;
 
@@ -44,11 +45,12 @@ class BinTask : public Task{
         void close();
         void empty();
         void resetScreen();
+        void resetButtons();
 
     public:
         void tick();
         void init(int period, int id) override;
         bool elapsed(unsigned long time);
-        BinTask(int idTemperature, int idGui, int idWaste, int idButtonOpen, int idButtonClose, int pin, int greenLedPin, int redLedPin);
+        BinTask(int idTemperature, int idUsr, int idWaste, int idButtonOpen, int idButtonClose, int idGui, int pin, int greenLedPin, int redLedPin);
 };
 #endif
