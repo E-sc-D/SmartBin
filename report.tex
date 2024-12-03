@@ -6,6 +6,17 @@
 \usepackage{hyperref}
 \usepackage[italian]{babel}
 \usepackage[italian]{cleveref}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{titlesec}
+
+\titleformat{\chapter}[hang] % Redefine the chapter format
+  {\normalfont\huge\bfseries} % Style for the chapter title
+  {} % No "Chapter" text
+  {0pt} % Space between number and title
+  {\thechapter\hspace{1em}} % Chapter number and title
+  
 \title{Progetto di IOT
     \\ SmartBin}
 
@@ -15,6 +26,13 @@
 \maketitle
 \tableofcontents
 \chapter{Hardware}
+\begin{figure}[H] % [H] ensures the image stays exactly here
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/image.png} % Replace 'example-image' with your file name
+    \caption{rappresentazione del circuito in thinkercad}
+    \label{fig:sample-image} % Optional label for referencing the image
+\end{figure}
+\vspace{1cm}
 La implementazione fisca del circuito è realizzata con i componenti 
 richesti dalla specifica:
 \begin{itemize}
@@ -57,6 +75,10 @@ richesti dalla specifica:
         \item Pin: 3
     \end{itemize}
 \end{itemize}
+\subsection{Componenti extra}
+La scelta di usare il condensatore è dato dalla presenza di 
+diversi componenti e dal servo che causa picchi dovuti all'improviso
+azionamento di esso, mentre arduino nano è per semplificare il cablaggio del circuito
 \chapter{Software}
 Per la realizzazione del software abbiamo optato per un sistema di task e FSM,
 inizialmente prevedavamo l'uso di una libreria, ma, il mancato supporto di Functional
@@ -71,6 +93,7 @@ variabile condivisa e un accesso a quelle delle altre task
 Per semplicità e unicità delle specifiche, la macchina a stati finiti
 è realizzata con uno switch, nella quale sono definite transizioni, chiamate in entrata, uscita
 e Timeout
+\newpage
 \section{Struttura}
 Il progetto è separato in varie task, suddivise in due categorie:
 \begin{itemize}
@@ -81,7 +104,7 @@ Il progetto è separato in varie task, suddivise in due categorie:
         \item \textbf{TemperatureTask} (FSM)
         \item \textbf{GuiTask}
         \item \textbf{WasteDetectorTask}
-        \item \textbf{UserDetectorTask}
+        \item \textbf{UserDetectorTask} (FSM)
     \end{itemize}
     
     \item \textbf{Task Decisionali} \\
@@ -90,4 +113,14 @@ Il progetto è separato in varie task, suddivise in due categorie:
         \item \textbf{BinTask} (FSM)
     \end{itemize}
 \end{itemize}
+\section{GUI}
+Per la implementazione della GUI abbiamo optato per python,
+per la sua praticità e semplicità.
+\subsection{Comunicazione}
+Lo scambio di dati avviene mediante La COM \\
+\textbf{la ricezione} dei dati avviene tramite semplice testo  \\
+
+\noindent
+La codifica della pressione dei bottoni e mediante semplici caratteri
+E,R (empty, restore)
 \end{document}
