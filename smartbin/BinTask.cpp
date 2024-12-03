@@ -1,9 +1,8 @@
 #include "BinTask.h"
 #include <Arduino.h>
+#include <LowPower.h>
 #include <LiquidCrystal_I2C.h>
 #include <Servo.h>
-
-#define MIN_FREE_SPACE 5 //distanza minima in cm tra il sonar e il contenuto del bidone 
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 Servo door;
@@ -31,66 +30,7 @@ void BinTask::init(int period, int id) {
 }
 
 void BinTask::tick() {
-    /*switch (state)
-    {
-        case STATUS_CLOSED:
-            break;
-
-        case STATUS_OPENED:
-            //check time, the bin closes after T time, 
-            if (Svariable[idWaste] > MIN_FREE_SPACE ||
-                    Svariable[idTemperature] > MAX_TEMP || 
-                    Svariable[idButtonClose] || 
-                    elapsed(5000)) {
-                state = STATUS_CLOSED;
-                //change text and wait for T2
-                close();
-                //wait(3000);
-            }
-            break;
-
-        case STATUS_FULL:
-            if (Svariable[idTemperature] > MAX_TEMP) {
-                state = STATUS_HOT;
-            }
-            //if segnale inviato da arduino si apre al contrario per T3 e poi si chiude
-            break;
-
-        case STATUS_EMPTYING:
-            //il servo si apre al contrario
-            //dopo T4 si richiude
-            empty();
-            //wait(4);
-            close();
-            state = STATUS_CLOSED;
-            break; 
-
-        case STATUS_HOT:
-            //Attendere GUI
-            break;
-
-        case STATUS_WAITING:
-            if(elapsed(amountOfWait)){
-                state = prevState;
-            }
-            break;
-
-        default:
-            break;
-    }*/
-
     switch (this->state) {
-        case CLOSED_ON:
-            if (Svariable[this->idWaste] < MIN_FREE_SPACE) {
-                this->state = FULL_ON_ENTER;
-            } else if (Svariable[this->idTemperature] % 2 != 0) {
-                this->state = HOT_ON_ENTER;
-            } else if (Svariable[this->idButtonOpen] == HIGH) {
-                this->state = OPENED_ON_ENTER;
-                resetButtons();
-            }
-            break;
-
         case CLOSED_ON_ENTER:
             this->state = CLOSED_ON;
             digitalWrite(this->greenLedPin, HIGH);
@@ -103,19 +43,21 @@ void BinTask::tick() {
             lcd.print("TO ENTER WASTE");
             break;
 
-        case CLOSED_ON_EXIT:
-            // Logica per CLOSED_ON_EXIT
+        case CLOSED_ON:
+            if (Svariable[this->idWaste] < MIN_FREE_SPACE) {
+                this->state = FULL_ON_ENTER;
+            } else if (Svariable[this->idTemperature] % 2 != 0) {
+                this->state = HOT_ON_ENTER;
+            } else if (Svariable[this->idButtonOpen] == HIGH) {
+                this->state = OPENED_ON_ENTER;
+                resetButtons();
+            } else if (Svariable[idUsr] == 1) {
+                this->state = SLEEP_ON_ENTER;
+            }
             break;
 
-        case OPENED_ON:
-            if (Svariable[this->idWaste] < MIN_FREE_SPACE ||
-                Svariable[this->idTemperature] % 2 != 0 || 
-                Svariable[this->idButtonClose] == HIGH ||
-                elapsed(5000))
-            {
-                this->state = OPENED_ON_EXIT;
-                resetButtons();
-            }
+        case CLOSED_ON_EXIT:
+            // Logica per CLOSED_ON_EXIT
             break;
 
         case OPENED_ON_ENTER:
@@ -127,6 +69,17 @@ void BinTask::tick() {
             lcd.print("PRESS CLOSE");
             lcd.setCursor(5, 2);
             lcd.print("WHEN DONE");
+            break;
+
+        case OPENED_ON:
+            if (Svariable[this->idWaste] < MIN_FREE_SPACE ||
+                Svariable[this->idTemperature] % 2 != 0 || 
+                Svariable[this->idButtonClose] == HIGH ||
+                elapsed(T1))
+            {
+                this->state = OPENED_ON_EXIT;
+                resetButtons();
+            }
             break;
 
         case OPENED_ON_EXIT:
@@ -144,12 +97,6 @@ void BinTask::tick() {
             this->state = WAITING_ON_ENTER;
             break;
 
-        case FULL_ON:
-            if(Svariable[idGui] == 1) {
-                this->state = FULL_ON_EXIT;
-            }
-            break;
-
         case FULL_ON_ENTER:
             this->state = FULL_ON;
             digitalWrite(this->greenLedPin, LOW);
@@ -160,15 +107,14 @@ void BinTask::tick() {
             lcd.print("CONTAINER FULL");
             break;
 
-        case FULL_ON_EXIT:
-            this->state = EMPTYING_ON_ENTER;
+        case FULL_ON:
+            if(Svariable[idGui] == 1) {
+                this->state = FULL_ON_EXIT;
+            }
             break;
 
-        case EMPTYING_ON:
-            if(elapsed(3000)) {
-                this->state = EMPTYING_ON_EXIT;
-                Svariable[idWaste] = 100;
-            }
+        case FULL_ON_EXIT:
+            this->state = EMPTYING_ON_ENTER;
             break;
 
         case EMPTYING_ON_ENTER:
@@ -177,16 +123,19 @@ void BinTask::tick() {
             resetScreen();
             lcd.setCursor(1, 1);
             lcd.print("EMPTYING CONTAINER");
+            this->timeReference = millis();
+            break;
+
+        case EMPTYING_ON:
+            if(elapsed(T3)) {
+                this->state = EMPTYING_ON_EXIT;
+                Svariable[idWaste] = 100;
+            }
             break;
 
         case EMPTYING_ON_EXIT:
             this->state = CLOSED_ON_ENTER;
-            break;
-
-        case HOT_ON:
-            if(Svariable[idGui] == 2) {
-                this->state = HOT_ON_EXIT;
-            }
+            Svariable[idGui] = 0;
             break;
 
         case HOT_ON_ENTER:
@@ -199,8 +148,15 @@ void BinTask::tick() {
             lcd.print("PROBLEM DETECTED");
             break;
 
+        case HOT_ON:
+            if(Svariable[idGui] == 2) {
+                this->state = HOT_ON_EXIT;
+            }
+            break;
+
         case HOT_ON_EXIT:
             this->state = CLOSED_ON_ENTER;
+            Svariable[idGui] = 0;
             break;
 
         case WAITING_ON_ENTER:
@@ -209,8 +165,20 @@ void BinTask::tick() {
             break;
 
         case WAITING_ON:
-            if(elapsed(2000)) {
+            if(elapsed(T2)) {
                 this->state = this->nextState;
+            }
+            break;
+
+        case SLEEP_ON_ENTER:
+            this->state = SLEEP_ON;
+            sleepComponents();
+            LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
+            break;
+
+        case SLEEP_ON:
+            if (Svariable[idUsr] == 0) {
+                this->state = CLOSED_ON_ENTER;
             }
             break;
 
@@ -230,16 +198,21 @@ void BinTask::close() {
     door.write(0);
 }
 
-void BinTask::empty(){
-    door.write(-90);
+void BinTask::empty() {
+    door.write(180);
 }
 
 //reset dello schermo
 void BinTask::resetScreen() {
-  lcd.backlight();
-  lcd.display();
-  lcd.setCursor(0, 0);
-  lcd.clear();
+    lcd.backlight();
+    lcd.display();
+    lcd.setCursor(0, 0);
+    lcd.clear();
+}
+
+void BinTask::sleepComponents() {
+    lcd.noBacklight();
+    lcd.noDisplay();
 }
 
 void BinTask::resetButtons() {
@@ -247,6 +220,6 @@ void BinTask::resetButtons() {
     Svariable[this->idButtonClose] = LOW;
 }
 
-bool BinTask::elapsed(unsigned long time){
+bool BinTask::elapsed(unsigned long time) {
     return (millis() - timeReference >= time);
 }

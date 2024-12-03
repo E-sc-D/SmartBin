@@ -1,13 +1,13 @@
 #include "Scheduler.h"
 #include <stdlib.h>
 
-void Scheduler::init(int basePeriod){
+void Scheduler::init(int basePeriod) {
   this->basePeriod = basePeriod;
   timer.setupPeriod(basePeriod);  
   Svariables = (int*)calloc(nTasks, sizeof(int));
 }
 
-bool Scheduler::addTask(Task* task){
+bool Scheduler::addTask(Task* task) {
   if (nTasks < MAX_TASKS-1){
     task->SetSvariable(Svariables);
     taskList[nTasks] = task;
@@ -18,7 +18,7 @@ bool Scheduler::addTask(Task* task){
   }
 }
   
-void Scheduler::schedule(){
+void Scheduler::schedule() {
   timer.waitForNextTick();
   for (int i = 0; i < nTasks; i++){
     if (taskList[i]->updateAndCheckTime(basePeriod)){

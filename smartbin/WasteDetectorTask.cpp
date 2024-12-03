@@ -21,7 +21,7 @@ float WasteDetectorTask::BinUsable() {
 
 	float d = pulseIn(this->echoPin, HIGH, 23529.4);
 
-  return (d / 58.8235);
+    return (d / 58.8235);
 }
 
 void WasteDetectorTask::tick() {

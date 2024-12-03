@@ -1,7 +1,7 @@
 #include "ButtonTask.h"
 #include <Arduino.h>
 
-void ButtonTask::tick(){
+void ButtonTask::tick() {
     int currState = digitalRead(pin);   // leggi la lettura del pulsante
     if((precState == HIGH) && (currState == LOW)){
         Svariable[id] = HIGH;
@@ -11,7 +11,7 @@ void ButtonTask::tick(){
     precState = currState;
 }
 
-ButtonTask::ButtonTask(int pin){
+ButtonTask::ButtonTask(int pin) {
     this->pin = pin;
     precState = LOW;
 }

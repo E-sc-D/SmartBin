@@ -3,6 +3,11 @@
 
 #include "Task.h"
 
+#define MIN_FREE_SPACE 5 //distanza minima in cm tra il sonar e il contenuto del bidone
+#define T1 10000
+#define T2 2000
+#define T3 3000
+
 #define CLOSED_ON_ENTER 0
 #define CLOSED_ON 1
 #define CLOSED_ON_EXIT 2
@@ -26,7 +31,10 @@
 #define WAITING_ON_ENTER 15
 #define WAITING_ON 16
 
-class BinTask : public Task{
+#define SLEEP_ON_ENTER 17
+#define SLEEP_ON 18
+
+class BinTask : public Task {
     private:
         int pin;
         int greenLedPin;
@@ -46,11 +54,12 @@ class BinTask : public Task{
         void empty();
         void resetScreen();
         void resetButtons();
+        void sleepComponents();
 
     public:
+        BinTask(int idTemperature, int idUsr, int idWaste, int idButtonOpen, int idButtonClose, int idGui, int pin, int greenLedPin, int redLedPin);
         void tick();
         void init(int period, int id) override;
         bool elapsed(unsigned long time);
-        BinTask(int idTemperature, int idUsr, int idWaste, int idButtonOpen, int idButtonClose, int idGui, int pin, int greenLedPin, int redLedPin);
 };
 #endif

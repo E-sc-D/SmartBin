@@ -9,19 +9,19 @@ class Task {
     int id;
   
   public:
-    virtual void init(int period, int id){
+    virtual void init(int period, int id) {
       myPeriod = period; 
       this->id = id; 
       timeElapsed = 0;
     }
 
-    void SetSvariable(int* var){
+    void SetSvariable(int* var) {
       Svariable = var;
     }
 
     virtual void tick() = 0;
 
-    bool updateAndCheckTime(int basePeriod){
+    bool updateAndCheckTime(int basePeriod) {
       timeElapsed += basePeriod;
       if (timeElapsed >= myPeriod){
         timeElapsed = 0;
@@ -31,7 +31,7 @@ class Task {
       }
     }
 
-    int getId(){
+    int getId() {
       return id;
     }
 };

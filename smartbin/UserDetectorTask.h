@@ -3,11 +3,21 @@
 
 #include "Task.h"
 
-class UserDetectorTask : public Task{
+#define TSLEEP 3000
+
+class UserDetectorTask : public Task {
     private:
         int pin;
+        int idBin;
+        int state;
+        int prevRange;
+        int timeReference;
+
+        static void wakeUp();
+        void isUserInRange();
     public:
-        UserDetectorTask(int pin);
+        UserDetectorTask(int pin, int idBin);
         void tick();
 };
+
 #endif

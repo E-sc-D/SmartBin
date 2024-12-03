@@ -3,7 +3,7 @@
 
 #include "Task.h"
 
-class WasteDetectorTask : public Task{
+class WasteDetectorTask : public Task {
     private:
         int trigPin;
         int echoPin;

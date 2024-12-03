@@ -1,13 +1,11 @@
 #include <Wire.h>
-#include <LowPower.h>
-#include <PinChangeInterrupt.h>
-#include "ButtonTask.h"
-#include "TemperatureTask.h"
-#include "UserDetectorTask.h"
-#include "BinTask.h"
-#include "WasteDetectorTask.h"
-#include "GUITask.h"
 #include "Scheduler.h"
+#include "BinTask.h"
+#include "ButtonTask.h"
+#include "GUITask.h"
+#include "TemperatureTask.h"
+#include "WasteDetectorTask.h"
+#include "UserDetectorTask.h"
 
 //digital pin
 #define PIR 2
@@ -43,12 +41,12 @@ void setup() {
     pinMode(RED_LED, OUTPUT);
 
     Task* t0 = new TemperatureTask(TEMP_SENSOR);
-    Task* t1 = new UserDetectorTask(PIR);
+    Task* t1 = new UserDetectorTask(PIR, BIN_ID);
     Task* t2 = new WasteDetectorTask(SONAR_TRIG, SONAR_ECHO, BIN_ID);
     Task* t3 = new ButtonTask(OPEN_BUTTON);
     Task* t4 = new ButtonTask(CLOSE_BUTTON);
     Task* t5 = new BinTask(TEMP_ID, USRD_ID, WSTD_ID, BTN1_ID, BTN2_ID, GUI_ID, SERVO, GREEN_LED, RED_LED);
-    Task* t6 = new GUITask(WSTD_ID, TEMP_ID);
+    Task* t6 = new GUITask(WSTD_ID, TEMP_ID, BIN_ID);
 
     scheduler.addTask(t0);
     scheduler.addTask(t1);
@@ -69,7 +67,7 @@ void setup() {
     t6->SetSvariable(scheduler.Svariables);
 
     t0->init(10000, TEMP_ID);
-    t1->init(20000, USRD_ID);
+    t1->init(1000, USRD_ID);
     t2->init(20000, WSTD_ID);
     t3->init(1000, BTN1_ID);
     t4->init(1000, BTN2_ID);
