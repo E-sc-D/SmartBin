@@ -6,9 +6,9 @@ bool isSleeping = false;
 UserDetectorTask::UserDetectorTask(int pin, int idBin) {
     this->pin = pin;
     this->idBin = idBin;
-    this->state = 0;
+    this->state = STATE_1;
     this->prevRange = LOW;
-    attachInterrupt(digitalPinToInterrupt(pin), wakeUp, RISING);
+    attachInterrupt(digitalPinToInterrupt(this->pin), wakeUp, RISING);
 }
 
 void UserDetectorTask::tick() {
@@ -20,31 +20,31 @@ void UserDetectorTask::isUserInRange() {
 
     switch (this->state)
     {
-        case 0:
-            if (range == LOW && this->prevRange == HIGH && Svariable[idBin] == 1) {
+        case STATE_1:
+            if (range == LOW && this->prevRange == HIGH && Svariable[this->idBin] == 1) {
                 this->timeReference = millis();
-                this->state = 1;
+                this->state = STATE_2;
             }
-            Svariable[id] = 0;
+            Svariable[this->id] = 0;
             break;
 
-        case 1:
+        case STATE_2:
             if (range == LOW && this->prevRange == LOW && (millis() - this->timeReference >= TSLEEP)) {
-                this->state = 2;
+                this->state = STATE_3;
                 isSleeping = true;
-                Svariable[id] = 1;
+                Svariable[this->id] = 1;
             } else if (range == LOW && this->prevRange == LOW && !(millis() - this->timeReference >= TSLEEP)) {
-                Svariable[id] = 0;
+                Svariable[this->id] = 0;
             } else if (range == HIGH && this->prevRange == LOW) {
-                this->state = 0;
-                Svariable[id] = 0;
+                this->state = STATE_1;
+                Svariable[this->id] = 0;
             }
             break;
 
-        case 2:
+        case STATE_3:
             if (isSleeping == false) {
-                this->state = 0;
-                Svariable[id] = 0;
+                this->state = STATE_1;
+                Svariable[this->id] = 0;
             }
             break;
         

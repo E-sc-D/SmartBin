@@ -5,6 +5,10 @@
 
 #define TSLEEP 3000
 
+#define STATE_1 0
+#define STATE_2 1
+#define STATE_3 2
+
 class UserDetectorTask : public Task {
     private:
         int pin;

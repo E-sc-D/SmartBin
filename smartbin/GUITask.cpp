@@ -12,17 +12,17 @@ void GUITask::tick() {
 
     if (Serial.available()) {
         char command = Serial.read();
-        if (command == 'E' && Svariable[idBin] == 7) {
-            Svariable[id] = 1;
-        } else if (command == 'R' && Svariable[idBin] == 13) {
-            Svariable[id] = 2;
+        if (command == 'E' && Svariable[this->idBin] == 7) {
+            Svariable[this->id] = 1;
+        } else if (command == 'R' && Svariable[this->idBin] == 13) {
+            Svariable[this->id] = 2;
         } else {
-            Svariable[id] = 0;
+            Svariable[this->id] = 0;
         }
     }
 }
 
 void GUITask::printTempAndWaste() {
-    Serial.println(Svariable[idWaste] > 100 ? 0 : 100 - Svariable[idWaste]);
-    Serial.println(Svariable[idTemperature] % 2 != 0 ? (Svariable[idTemperature] - 1) / 100 : Svariable[idTemperature] / 100);
+    Serial.println(Svariable[this->idWaste] > 100 ? 0 : 100 - Svariable[this->idWaste]);
+    Serial.println(Svariable[this->idTemperature] % 2 != 0 ? (Svariable[this->idTemperature] - 1) / 100 : Svariable[this->idTemperature] / 100);
 }

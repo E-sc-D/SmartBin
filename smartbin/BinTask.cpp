@@ -51,7 +51,7 @@ void BinTask::tick() {
             } else if (Svariable[this->idButtonOpen] == HIGH) {
                 this->state = OPENED_ON_ENTER;
                 resetButtons();
-            } else if (Svariable[idUsr] == 1) {
+            } else if (Svariable[this->idUsr] == 1) {
                 this->state = SLEEP_ON_ENTER;
             }
             break;
@@ -108,7 +108,7 @@ void BinTask::tick() {
             break;
 
         case FULL_ON:
-            if(Svariable[idGui] == 1) {
+            if(Svariable[this->idGui] == 1) {
                 this->state = FULL_ON_EXIT;
             }
             break;
@@ -129,13 +129,13 @@ void BinTask::tick() {
         case EMPTYING_ON:
             if(elapsed(T3)) {
                 this->state = EMPTYING_ON_EXIT;
-                Svariable[idWaste] = 100;
+                Svariable[this->idWaste] = 100;
             }
             break;
 
         case EMPTYING_ON_EXIT:
             this->state = CLOSED_ON_ENTER;
-            Svariable[idGui] = 0;
+            Svariable[this->idGui] = 0;
             break;
 
         case HOT_ON_ENTER:
@@ -149,14 +149,14 @@ void BinTask::tick() {
             break;
 
         case HOT_ON:
-            if(Svariable[idGui] == 2) {
+            if(Svariable[this->idGui] == 2) {
                 this->state = HOT_ON_EXIT;
             }
             break;
 
         case HOT_ON_EXIT:
             this->state = CLOSED_ON_ENTER;
-            Svariable[idGui] = 0;
+            Svariable[this->idGui] = 0;
             break;
 
         case WAITING_ON_ENTER:
@@ -177,7 +177,7 @@ void BinTask::tick() {
             break;
 
         case SLEEP_ON:
-            if (Svariable[idUsr] == 0) {
+            if (Svariable[this->idUsr] == 0) {
                 this->state = CLOSED_ON_ENTER;
             }
             break;
@@ -221,5 +221,5 @@ void BinTask::resetButtons() {
 }
 
 bool BinTask::elapsed(unsigned long time) {
-    return (millis() - timeReference >= time);
+    return (millis() - this->timeReference >= time);
 }

@@ -6,10 +6,14 @@
 #define MAX_TEMP 30
 #define MAXTEMPTIME 3000
 
+#define STATE_1 0
+#define STATE_2 1
+#define STATE_3 2
+
 class TemperatureTask : public Task {
     private:
         int pin;
-        int state = 0;
+        int state;
         int prevTemp;
         int timeReference;
     public:

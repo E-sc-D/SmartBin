@@ -3,6 +3,8 @@
 
 #include "Task.h"
 
+#define MAX_SPACE 100
+
 class WasteDetectorTask : public Task {
     private:
         int trigPin;

@@ -9,7 +9,7 @@ WasteDetectorTask::WasteDetectorTask(int trigPin, int echoPin, int idBin) {
 
 void WasteDetectorTask::init(int period, int id) {
     Task::init(period, id);
-    Svariable[id] = 100;
+    Svariable[this->id] = MAX_SPACE;
 }
 
 float WasteDetectorTask::BinUsable() {
@@ -26,7 +26,7 @@ float WasteDetectorTask::BinUsable() {
 
 void WasteDetectorTask::tick() {
     //se il bidone è aperto, misura il livello di scarti via arduino
-    if(Svariable[idBin] == 4){
-        Svariable[id] = (int)BinUsable();
+    if(Svariable[this->idBin] == 4){
+        Svariable[this->id] = (int)BinUsable();
     }
 }
